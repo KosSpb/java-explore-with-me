@@ -1,22 +1,27 @@
 package ru.practicum.explorewithme.client;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.explorewithme.StatsRequestDto;
+import ru.practicum.explorewithme.StatsResponseDto;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 public class StatsClient {
     private final RestTemplate rest;
 
@@ -28,42 +33,57 @@ public class StatsClient {
                 .build();
     }
 
-    public ResponseEntity<Object> registerEndpointHit(StatsRequestDto statsRequestDto) {
-        return makeAndSendRequest(HttpMethod.POST, "/hit", null, statsRequestDto);
+    public StatsResponseDto registerEndpointHit(StatsRequestDto statsRequestDto) {
+        return makeAndSendRequest(HttpMethod.POST, "/hit", null, statsRequestDto,
+                new ParameterizedTypeReference<>() {});
     }
 
-    public ResponseEntity<Object> getStats(String start, String end, String[] uris, boolean unique) {
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("start", start);
-        parameters.put("end", end);
-        parameters.put("uris", uris);
-        parameters.put("unique", unique);
-
+    public List<StatsResponseDto> getStats(String start, String end, List<String> uris, boolean unique) {
         String path;
+        String uriRequestParam = null;
+
         if (uris != null) {
+            StringBuilder uriRequestParamBuilder = new StringBuilder();
+            for (String uri : uris) {
+                uriRequestParamBuilder.append(uri).append(",");
+            }
+            uriRequestParamBuilder.deleteCharAt(uriRequestParamBuilder.length() - 1);
+            uriRequestParam = uriRequestParamBuilder.toString();
+
             path = "/stats?start={start}&end={end}&uris={uris}&unique={unique}";
         } else {
             path = "/stats?start={start}&end={end}&unique={unique}";
         }
 
-        return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("start", start);
+        parameters.put("end", end);
+        parameters.put("uris", uriRequestParam);
+        parameters.put("unique", unique);
+
+        return makeAndSendRequest(HttpMethod.GET, path, parameters, null, new ParameterizedTypeReference<>() {});
     }
 
-    private <T> ResponseEntity<Object> makeAndSendRequest(HttpMethod method, String path,
-                                                          @Nullable Map<String, Object> parameters, @Nullable T body) {
+    private <T, R> R makeAndSendRequest(HttpMethod method, String path,
+                                        @Nullable Map<String, Object> parameters, @Nullable T body,
+                                        ParameterizedTypeReference<R> responseType) {
         HttpEntity<T> requestEntity = new HttpEntity<>(body, defaultHeaders());
 
-        ResponseEntity<Object> serverResponse;
+        ResponseEntity<R> serverResponse;
+
         try {
             if (parameters != null) {
-                serverResponse = rest.exchange(path, method, requestEntity, Object.class, parameters);
+                serverResponse = rest.exchange(path, method, requestEntity, responseType, parameters);
             } else {
-                serverResponse = rest.exchange(path, method, requestEntity, Object.class);
+                serverResponse = rest.exchange(path, method, requestEntity, responseType);
             }
         } catch (HttpStatusCodeException e) {
-            return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());
+            String errorMessage = String.format("При выполнении запроса к сервису статистики произошла ошибка: " +
+                    "код состояния %d, тело ответа: \"%s\".", e.getRawStatusCode(), e.getResponseBodyAsString());
+            log.warn(errorMessage);
+            throw new RestClientException(errorMessage);
         }
-        return prepareGatewayResponse(serverResponse);
+        return prepareGatewayResponse(serverResponse).getBody();
     }
 
     private HttpHeaders defaultHeaders() {
@@ -73,17 +93,14 @@ public class StatsClient {
         return headers;
     }
 
-    private ResponseEntity<Object> prepareGatewayResponse(ResponseEntity<Object> response) {
+    private <T> ResponseEntity<T> prepareGatewayResponse(ResponseEntity<T> response) {
         if (response.getStatusCode().is2xxSuccessful()) {
             return response;
+        } else {
+            String errorMessage = String.format("Сервис статистики вернул ответ с кодом состояния %d.",
+                    response.getStatusCodeValue());
+            log.warn(errorMessage);
+            throw new RestClientException(errorMessage);
         }
-
-        ResponseEntity.BodyBuilder responseBuilder = ResponseEntity.status(response.getStatusCode());
-
-        if (response.hasBody()) {
-            return responseBuilder.body(response.getBody());
-        }
-
-        return responseBuilder.build();
     }
 }

@@ -8,6 +8,7 @@ import ru.practicum.explorewithme.StatsRequestDto;
 import ru.practicum.explorewithme.StatsResponseDto;
 import ru.practicum.explorewithme.service.StatsServerService;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -24,7 +25,7 @@ public class StatsServerController {
 
     @PostMapping("/hit")
     @ResponseStatus(HttpStatus.CREATED)
-    public StatsResponseDto registerEndpointHit(@RequestBody StatsRequestDto statsRequestDto) {
+    public StatsResponseDto registerEndpointHit(@RequestBody @Valid StatsRequestDto statsRequestDto) {
         return statsServerService.registerEndpointHit(statsRequestDto);
     }
 
