@@ -43,12 +43,7 @@ public class StatsClient {
         String uriRequestParam = null;
 
         if (uris != null) {
-            StringBuilder uriRequestParamBuilder = new StringBuilder();
-            for (String uri : uris) {
-                uriRequestParamBuilder.append(uri).append(",");
-            }
-            uriRequestParamBuilder.deleteCharAt(uriRequestParamBuilder.length() - 1);
-            uriRequestParam = uriRequestParamBuilder.toString();
+            uriRequestParam = String.join(",", uris);
 
             path = "/stats?start={start}&end={end}&uris={uris}&unique={unique}";
         } else {
