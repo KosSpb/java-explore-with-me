@@ -3,10 +3,12 @@ package ru.practicum.explorewithme.error;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.explorewithme.error.model.ErrorResponse;
+import ru.practicum.explorewithme.exception.IncorrectRequestException;
 
 import javax.validation.ConstraintViolationException;
 
@@ -20,9 +22,12 @@ public class ErrorHandler {
         return new ErrorResponse(exception.getFieldError().getDefaultMessage());
     }
 
-    @ExceptionHandler
+    @ExceptionHandler({MissingServletRequestParameterException.class,
+            ConstraintViolationException.class,
+            NumberFormatException.class,
+            IncorrectRequestException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleConstraintViolationException(final ConstraintViolationException exception) {
+    public ErrorResponse handleBadRequest(final RuntimeException exception) {
         log.warn(exception.getMessage());
         return new ErrorResponse(exception.getMessage());
     }
