@@ -2,6 +2,7 @@ package ru.practicum.explorewithme.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,11 +17,14 @@ import ru.practicum.explorewithme.service.CompilationService;
 import ru.practicum.explorewithme.service.EventService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
 @RestController
+@Validated
 public class PublicController {
     private final CompilationService compilationService;
     private final CategoryService categoryService;
@@ -39,28 +43,28 @@ public class PublicController {
     @GetMapping("/compilations")
     public Collection<CompilationResponseDto> getAllEventsCompilations(
             @RequestParam(value = "pinned", required = false) Boolean pinned,
-            @RequestParam(value = "from", defaultValue = "0") int from,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+            @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
+            @RequestParam(value = "size", defaultValue = "10") @Positive int size) {
 
         return compilationService.getAllEventsCompilations(pinned, from, size);
     }
 
     @GetMapping("/compilations/{compId}")
-    public CompilationResponseDto getEventsCompilationById(@PathVariable(value = "compId") long compId) {
+    public CompilationResponseDto getEventsCompilationById(@PathVariable(value = "compId") @Positive long compId) {
 
         return compilationService.getEventsCompilationById(compId);
     }
 
     @GetMapping("/categories")
     public Collection<CategoryResponseDto> getAllEventCategories(
-            @RequestParam(value = "from", defaultValue = "0") int from,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+            @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
+            @RequestParam(value = "size", defaultValue = "10") @Positive int size) {
 
         return categoryService.getAllEventCategories(from, size);
     }
 
     @GetMapping("/categories/{catId}")
-    public CategoryResponseDto getEventCategoryById(@PathVariable(value = "catId") long catId) {
+    public CategoryResponseDto getEventCategoryById(@PathVariable(value = "catId") @Positive long catId) {
 
         return categoryService.getEventCategoryById(catId);
     }
@@ -76,19 +80,21 @@ public class PublicController {
             @DateTimeFormat(pattern = dateTimePattern) LocalDateTime rangeEnd,
             @RequestParam(value = "onlyAvailable", defaultValue = "false") Boolean onlyAvailable,
             @RequestParam(value = "sort", defaultValue = "EVENT_DATE") String sortType,
-            @RequestParam(value = "from", defaultValue = "0") int from,
-            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
+            @RequestParam(value = "size", defaultValue = "10") @Positive int size,
             HttpServletRequest request) {
 
         EventsSortType eventsSortType = EventsSortType.findByType(sortType);
         return eventService.getAllPublishedEvents(searchText, categoryIds, paid, rangeStart, rangeEnd,
-                onlyAvailable, eventsSortType, from, size, request);
+                onlyAvailable, eventsSortType, from, size, request.getRequestURI(), request.getRemoteAddr());
     }
 
     @GetMapping("/events/{id}")
-    public EventFullInfoResponseDto getFullInfoAboutPublishedEventById(@PathVariable(value = "id") long eventId,
-                                                                       HttpServletRequest request) {
+    public EventFullInfoResponseDto getFullInfoAboutPublishedEventById(
+            @PathVariable(value = "id") @Positive long eventId,
+            HttpServletRequest request) {
 
-        return eventService.getFullInfoAboutPublishedEventById(eventId, request);
+        return eventService.getFullInfoAboutPublishedEventById(
+                eventId, request.getRequestURI(), request.getRemoteAddr());
     }
 }

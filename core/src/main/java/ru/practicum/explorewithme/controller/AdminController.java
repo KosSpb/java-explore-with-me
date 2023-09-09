@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.request.CategoryRequestDto;
 import ru.practicum.explorewithme.dto.request.CompilationRequestDto;
@@ -17,8 +18,11 @@ import ru.practicum.explorewithme.service.CategoryService;
 import ru.practicum.explorewithme.service.CompilationService;
 import ru.practicum.explorewithme.service.EventService;
 import ru.practicum.explorewithme.service.UserService;
+import ru.practicum.explorewithme.validation.OnCreate;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -26,6 +30,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("/admin")
+@Validated
 public class AdminController {
     private final CategoryService categoryService;
     private final EventService eventService;
@@ -54,7 +59,7 @@ public class AdminController {
 
     @DeleteMapping("/categories/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCategoryByAdmin(@PathVariable(value = "catId") long catId) {
+    public void deleteCategoryByAdmin(@PathVariable(value = "catId") @Positive long catId) {
 
         categoryService.deleteCategoryByAdmin(catId);
         log.info("deleteCategoryByAdmin - request for deletion of category with id {} by admin was processed.", catId);
@@ -62,7 +67,7 @@ public class AdminController {
 
     @PatchMapping("/categories/{catId}")
     public CategoryResponseDto updateCategoryByAdmin(@RequestBody @Valid CategoryRequestDto categoryRequestDto,
-                                                     @PathVariable(value = "catId") long catId) {
+                                                     @PathVariable(value = "catId") @Positive long catId) {
 
         CategoryResponseDto updatedCategory = categoryService.updateCategoryByAdmin(categoryRequestDto, catId);
         log.info("updateCategoryByAdmin - request for update of category with id {} to \"{}\" by admin was processed.",
@@ -79,8 +84,8 @@ public class AdminController {
             @DateTimeFormat(pattern = dateTimePattern) LocalDateTime rangeStart,
             @RequestParam(value = "rangeEnd", required = false)
             @DateTimeFormat(pattern = dateTimePattern) LocalDateTime rangeEnd,
-            @RequestParam(value = "from", defaultValue = "0") int from,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+            @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
+            @RequestParam(value = "size", defaultValue = "10") @Positive int size) {
 
         return eventService.getFullInfoAboutAllEventsByAdmin(
                 userIds, statesOfEvent, categoryIds, rangeStart, rangeEnd, from, size);
@@ -89,7 +94,7 @@ public class AdminController {
     @PatchMapping("/events/{eventId}")
     public EventFullInfoResponseDto updateEventAndPublicationStatusEditByAdmin(
             @RequestBody @Valid EventRequestDto eventRequestDto,
-            @PathVariable(value = "eventId") long eventId) {
+            @PathVariable(value = "eventId") @Positive long eventId) {
 
         EventRequestDto.checkEventDate(eventRequestDto.getEventDate());
         EventFullInfoResponseDto updatedEvent =
@@ -102,8 +107,8 @@ public class AdminController {
     @GetMapping("/users")
     public Collection<UserResponseDto> getRequiredUsersByAdmin(
             @RequestParam(value = "ids", required = false) List<Long> userIds,
-            @RequestParam(value = "from", defaultValue = "0") int from,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+            @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
+            @RequestParam(value = "size", defaultValue = "10") @Positive int size) {
 
         return userService.getRequiredUsersByAdmin(userIds, from, size);
     }
@@ -119,7 +124,7 @@ public class AdminController {
 
     @DeleteMapping("/users/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUserByAdmin(@PathVariable(value = "userId") long userId) {
+    public void deleteUserByAdmin(@PathVariable(value = "userId") @Positive long userId) {
 
         userService.deleteUserByAdmin(userId);
         log.info("deleteUserByAdmin - request for deletion of user with id {} by admin was processed.", userId);
@@ -127,6 +132,7 @@ public class AdminController {
 
     @PostMapping("/compilations")
     @ResponseStatus(HttpStatus.CREATED)
+    @Validated(OnCreate.class)
     public CompilationResponseDto createCompilationByAdmin(
             @RequestBody @Valid CompilationRequestDto compilationRequestDto) {
 
@@ -138,7 +144,7 @@ public class AdminController {
 
     @DeleteMapping("/compilations/{compId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteCompilationByAdmin(@PathVariable(value = "compId") long compId) {
+    public void deleteCompilationByAdmin(@PathVariable(value = "compId") @Positive long compId) {
 
         compilationService.deleteCompilationByAdmin(compId);
         log.info("deleteCompilationByAdmin - request for deletion of compilation with id {} by admin was processed.",
@@ -148,7 +154,7 @@ public class AdminController {
     @PatchMapping("/compilations/{compId}")
     public CompilationResponseDto updateCompilationByAdmin(
             @RequestBody @Valid CompilationRequestDto compilationRequestDto,
-            @PathVariable(value = "compId") long compId) {
+            @PathVariable(value = "compId") @Positive long compId) {
 
         CompilationResponseDto updatedCompilation =
                 compilationService.updateCompilationByAdmin(compilationRequestDto, compId);

@@ -1,6 +1,5 @@
 package ru.practicum.explorewithme.service;
 
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +22,9 @@ public class StatsServerService {
     private final StatsServerMapper mapper;
 
     @Autowired
-    public StatsServerService(StatsServerRepository statsServerRepository) {
+    public StatsServerService(StatsServerRepository statsServerRepository, StatsServerMapper mapper) {
         this.statsServerRepository = statsServerRepository;
-        this.mapper = Mappers.getMapper(StatsServerMapper.class);
+        this.mapper = mapper;
     }
 
     public StatsResponseDto registerEndpointHit(StatsRequestDto statsRequestDto) {

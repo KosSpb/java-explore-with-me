@@ -3,6 +3,7 @@ package ru.practicum.explorewithme.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explorewithme.dto.request.EventRequestDto;
 import ru.practicum.explorewithme.dto.request.UpdateStatusOfRequestsForEventDto;
@@ -12,13 +13,17 @@ import ru.practicum.explorewithme.dto.response.EventResponseDto;
 import ru.practicum.explorewithme.dto.response.RequestForEventResponseDto;
 import ru.practicum.explorewithme.service.EventService;
 import ru.practicum.explorewithme.service.RequestForEventService;
+import ru.practicum.explorewithme.validation.OnCreate;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.Collection;
 
 @RestController
 @Slf4j
 @RequestMapping("/users/{userId}")
+@Validated
 public class PrivateController {
     private final EventService eventService;
     private final RequestForEventService requestForEventService;
@@ -31,17 +36,18 @@ public class PrivateController {
 
     @GetMapping("/events")
     public Collection<EventResponseDto> getAllEventsCreatedByUser(
-            @PathVariable(value = "userId") long userId,
-            @RequestParam(value = "from", defaultValue = "0") int from,
-            @RequestParam(value = "size", defaultValue = "10") int size) {
+            @PathVariable(value = "userId") @Positive long userId,
+            @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
+            @RequestParam(value = "size", defaultValue = "10") @Positive int size) {
 
         return eventService.getAllEventsCreatedByUser(userId, from, size);
     }
 
     @PostMapping("/events")
     @ResponseStatus(HttpStatus.CREATED)
+    @Validated(OnCreate.class)
     public EventFullInfoResponseDto createEventByUser(@RequestBody @Valid EventRequestDto eventRequestDto,
-                                                      @PathVariable(value = "userId") long userId) {
+                                                      @PathVariable(value = "userId") @Positive long userId) {
 
         EventRequestDto.checkEventDate(eventRequestDto.getEventDate());
         EventFullInfoResponseDto createdEvent = eventService.createEventByUser(eventRequestDto, userId);
@@ -51,16 +57,17 @@ public class PrivateController {
     }
 
     @GetMapping("/events/{eventId}")
-    public EventFullInfoResponseDto getFullInfoEventCreatedByUserById(@PathVariable(value = "userId") long userId,
-                                                                      @PathVariable(value = "eventId") long eventId) {
+    public EventFullInfoResponseDto getFullInfoEventCreatedByUserById(
+            @PathVariable(value = "userId") @Positive long userId,
+            @PathVariable(value = "eventId") @Positive long eventId) {
 
         return eventService.getEventCreatedByUserById(userId, eventId);
     }
 
     @PatchMapping("/events/{eventId}")
     public EventFullInfoResponseDto updateEventByUser(@RequestBody @Valid EventRequestDto eventRequestDto,
-                                                      @PathVariable(value = "userId") long userId,
-                                                      @PathVariable(value = "eventId") long eventId) {
+                                                      @PathVariable(value = "userId") @Positive long userId,
+                                                      @PathVariable(value = "eventId") @Positive long eventId) {
 
         EventRequestDto.checkEventDate(eventRequestDto.getEventDate());
         EventFullInfoResponseDto updatedEvent = eventService.updateEventByUser(eventRequestDto, userId, eventId);
@@ -71,8 +78,8 @@ public class PrivateController {
 
     @GetMapping("/events/{eventId}/requests")
     public Collection<RequestForEventResponseDto> getAllRequestsForEventByInitiator(
-            @PathVariable(value = "userId") long userId,
-            @PathVariable(value = "eventId") long eventId) {
+            @PathVariable(value = "userId") @Positive long userId,
+            @PathVariable(value = "eventId") @Positive long eventId) {
 
         return requestForEventService.getAllRequestsForEventByInitiator(userId, eventId);
     }
@@ -80,8 +87,8 @@ public class PrivateController {
     @PatchMapping("/events/{eventId}/requests")
     public AllTypeRequestsForEventsResponseDto updateStatusOfRequestsForEventByInitiator(
             @RequestBody @Valid UpdateStatusOfRequestsForEventDto requestForEventDto,
-            @PathVariable(value = "userId") long userId,
-            @PathVariable(value = "eventId") long eventId) {
+            @PathVariable(value = "userId") @Positive long userId,
+            @PathVariable(value = "eventId") @Positive long eventId) {
 
         AllTypeRequestsForEventsResponseDto updatedRequestsForEvent =
                 requestForEventService.updateStatusOfRequestsForEventByInitiator(requestForEventDto, userId, eventId);
@@ -92,15 +99,16 @@ public class PrivateController {
 
     @GetMapping("/requests")
     public Collection<RequestForEventResponseDto> getAllRequestsOfUserForEventsByUserId(
-            @PathVariable(value = "userId") long userId) {
+            @PathVariable(value = "userId") @Positive long userId) {
 
         return requestForEventService.getAllRequestsOfUserForEventsByUserId(userId);
     }
 
     @PostMapping("/requests")
     @ResponseStatus(HttpStatus.CREATED)
-    public RequestForEventResponseDto createRequestForEventByUser(@PathVariable(value = "userId") long userId,
-                                                                  @RequestParam(value = "eventId") long eventId) {
+    public RequestForEventResponseDto createRequestForEventByUser(
+            @PathVariable(value = "userId") @Positive long userId,
+            @RequestParam(value = "eventId") @Positive long eventId) {
 
         RequestForEventResponseDto createdRequestForEvent =
                 requestForEventService.createRequestForEventByUser(userId, eventId);
@@ -110,8 +118,9 @@ public class PrivateController {
     }
 
     @PatchMapping("/requests/{requestId}/cancel")
-    public RequestForEventResponseDto cancelRequestForEventByUser(@PathVariable(value = "userId") long userId,
-                                                                  @PathVariable(value = "requestId") long requestId) {
+    public RequestForEventResponseDto cancelRequestForEventByUser(
+            @PathVariable(value = "userId") @Positive long userId,
+            @PathVariable(value = "requestId") @Positive long requestId) {
 
         RequestForEventResponseDto cancelledRequestForEvent =
                 requestForEventService.cancelRequestForEventByUser(userId, requestId);

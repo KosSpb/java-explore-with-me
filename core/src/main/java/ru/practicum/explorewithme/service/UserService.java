@@ -1,6 +1,5 @@
 package ru.practicum.explorewithme.service;
 
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,9 +21,9 @@ public class UserService {
     private final UserMapper userMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
-        this.userMapper = Mappers.getMapper(UserMapper.class);
+        this.userMapper = userMapper;
     }
 
     public Collection<UserResponseDto> getRequiredUsersByAdmin(List<Long> userIds, int from, int size) {

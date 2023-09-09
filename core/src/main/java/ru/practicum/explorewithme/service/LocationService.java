@@ -2,18 +2,13 @@ package ru.practicum.explorewithme.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import ru.practicum.explorewithme.dao.LocationRepository;
 import ru.practicum.explorewithme.dto.request.LocationRequestDto;
 import ru.practicum.explorewithme.exception.NotFoundException;
 import ru.practicum.explorewithme.mapper.LocationMapper;
 import ru.practicum.explorewithme.model.Location;
-import ru.practicum.explorewithme.validation.OnCreate;
-
-import javax.validation.Valid;
 
 @Service
-@Validated
 public class LocationService {
     private final LocationRepository locationRepository;
     private final LocationMapper locationMapper;
@@ -24,8 +19,7 @@ public class LocationService {
         this.locationMapper = locationMapper;
     }
 
-    @Validated(OnCreate.class)
-    public Location createLocation(@Valid LocationRequestDto locationRequestDto) {
+    public Location createLocation(LocationRequestDto locationRequestDto) {
         return locationRepository.save(locationMapper.dtoToLocation(locationRequestDto));
     }
 

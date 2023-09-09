@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import ru.practicum.explorewithme.dao.CompilationRepository;
 import ru.practicum.explorewithme.dao.EventRepository;
 import ru.practicum.explorewithme.dto.request.CompilationRequestDto;
@@ -13,17 +12,14 @@ import ru.practicum.explorewithme.exception.NotFoundException;
 import ru.practicum.explorewithme.mapper.CompilationMapper;
 import ru.practicum.explorewithme.model.Compilation;
 import ru.practicum.explorewithme.model.Event;
-import ru.practicum.explorewithme.validation.OnCreate;
 
-import javax.validation.Valid;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-@Validated
 public class CompilationService {
     private final CompilationRepository compilationRepository;
     private final EventRepository eventRepository;
@@ -55,15 +51,14 @@ public class CompilationService {
         return compilationMapper.compilationToDto(compilation);
     }
 
-    @Validated(OnCreate.class)
-    public CompilationResponseDto createCompilationByAdmin(@Valid CompilationRequestDto compilationRequestDto) {
+    public CompilationResponseDto createCompilationByAdmin(CompilationRequestDto compilationRequestDto) {
         if (compilationRequestDto.getPinned() == null) {
             compilationRequestDto.setPinned(false);
         }
 
         Set<Event> eventsOfCompilation;
         if (compilationRequestDto.getEvents() == null || compilationRequestDto.getEvents().isEmpty()) {
-            eventsOfCompilation = new HashSet<>();
+            eventsOfCompilation = Collections.emptySet();
         } else {
             eventsOfCompilation = eventRepository.findByIdIn(compilationRequestDto.getEvents());
         }
@@ -88,7 +83,7 @@ public class CompilationService {
         if (compilationRequestDto.getEvents() != null) {
             Set<Event> eventsOfCompilation;
             if (compilationRequestDto.getEvents().isEmpty()) {
-                eventsOfCompilation = new HashSet<>();
+                eventsOfCompilation = Collections.emptySet();
             } else {
                 eventsOfCompilation = eventRepository.findByIdIn(compilationRequestDto.getEvents());
             }

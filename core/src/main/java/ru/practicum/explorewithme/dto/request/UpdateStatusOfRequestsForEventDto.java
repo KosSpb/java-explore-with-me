@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.explorewithme.enums.RequestForEventStatus;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class UpdateStatusOfRequestsForEventDto {
-    @NotNull(message = "Field: requestIds. Error: must not be null.")
+    @NotEmpty(message = "Field: requestIds. Error: must not be null nor empty.")
     private List<Long> requestIds;
     @NotNull(message = "Field: status. Error: must not be null.")
     private RequestForEventStatus status;

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import ru.practicum.explorewithme.StatsRequestDto;
 import ru.practicum.explorewithme.StatsResponseDto;
 import ru.practicum.explorewithme.client.StatsClient;
@@ -22,17 +21,13 @@ import ru.practicum.explorewithme.exception.IncorrectRequestException;
 import ru.practicum.explorewithme.exception.NotFoundException;
 import ru.practicum.explorewithme.mapper.EventMapper;
 import ru.practicum.explorewithme.model.*;
-import ru.practicum.explorewithme.validation.OnCreate;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@Validated
 public class EventService {
     private final StatsClient statsClient;
     private final EventRepository eventRepository;
@@ -67,7 +62,7 @@ public class EventService {
                 eventRepository.findByInitiatorOrderByCreatedOnAsc(eventsCreator, pageRequest).getContent();
 
         if (eventsCreatedByUser.isEmpty()) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         } else {
             List<EventViews> eventsViews = getViewsOfAllEvents(eventsCreatedByUser);
 
@@ -85,8 +80,7 @@ public class EventService {
         }
     }
 
-    @Validated(OnCreate.class)
-    public EventFullInfoResponseDto createEventByUser(@Valid EventRequestDto eventRequestDto, long userId) {
+    public EventFullInfoResponseDto createEventByUser(EventRequestDto eventRequestDto, long userId) {
         User initiatorOfEvent = userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException("creation of event: User with id=" + userId + " was not found");
         });
@@ -183,7 +177,7 @@ public class EventService {
                         userIds, statesAsEnums, categoryIds, rangeStart, rangeEnd, pageRequest).getContent();
 
         if (requestedEvents.isEmpty()) {
-            return new ArrayList<>();
+            return Collections.emptyList();
         } else {
             List<EventViews> eventsViews = getViewsOfAllEvents(requestedEvents);
 
@@ -240,7 +234,8 @@ public class EventService {
                                                               Boolean onlyAvailable,
                                                               EventsSortType sortType,
                                                               int from, int size,
-                                                              HttpServletRequest request) {
+                                                              String requestURI,
+                                                              String remoteIpAddress) {
         if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
             throw new IncorrectRequestException("get all published events: Start time cannot be after end time");
         }
@@ -252,12 +247,12 @@ public class EventService {
                         searchText, categoryIds, paid, onlyAvailable, rangeStart, rangeEnd, pageRequest).getContent();
 
         if (publishedEvents.isEmpty()) {
-            registerRequestToEndpoint(request);
-            return new ArrayList<>();
+            registerRequestToEndpoint(requestURI, remoteIpAddress);
+            return Collections.emptyList();
         }
 
         List<EventViews> eventsViews = getViewsOfAllEvents(publishedEvents);
-        registerRequestToEndpoint(request);
+        registerRequestToEndpoint(requestURI, remoteIpAddress);
 
         if (sortType == EventsSortType.EVENT_DATE) {
             return publishedEvents.stream()
@@ -287,7 +282,9 @@ public class EventService {
         }
     }
 
-    public EventFullInfoResponseDto getFullInfoAboutPublishedEventById(long eventId, HttpServletRequest request) {
+    public EventFullInfoResponseDto getFullInfoAboutPublishedEventById(long eventId,
+                                                                       String requestURI,
+                                                                       String remoteIpAddress) {
         Event publishedEvent = eventRepository.findByIdAndState(eventId, EventModerationState.PUBLISHED);
 
         if (publishedEvent == null) {
@@ -297,7 +294,7 @@ public class EventService {
 
         EventFullInfoResponseDto eventFullInfoResponseDto = getEventFullInfoResponseDtoWithViews(publishedEvent);
 
-        registerRequestToEndpoint(request);
+        registerRequestToEndpoint(requestURI, remoteIpAddress);
         return eventFullInfoResponseDto;
     }
 
@@ -350,11 +347,11 @@ public class EventService {
         }
     }
 
-    private void registerRequestToEndpoint(HttpServletRequest request) {
+    private void registerRequestToEndpoint(String requestURI, String remoteIpAddress) {
         statsClient.registerEndpointHit(StatsRequestDto.builder()
                 .app("ewm-main-service")
-                .uri(request.getRequestURI())
-                .ip(request.getRemoteAddr())
+                .uri(requestURI)
+                .ip(remoteIpAddress)
                 .timestamp(LocalDateTime.now())
                 .build());
     }
