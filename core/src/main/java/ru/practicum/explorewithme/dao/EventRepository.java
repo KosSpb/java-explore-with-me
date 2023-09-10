@@ -46,11 +46,16 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "OR upper(e.description) like upper(concat('%', :searchText, '%')))) " +
             "AND (COALESCE (:categoryIds) IS NULL OR e.category.id IN :categoryIds) " +
             "AND (COALESCE (:paid) IS NULL OR e.paid = :paid) " +
-            "AND (COALESCE (:onlyAvailable) = false OR (e.confirmedRequests < e.participantLimit)) " +
+            "AND (COALESCE (:onlyAvailable) = false OR " +
+            "(SELECT COUNT(r.id) " +
+            "FROM RequestForEvent AS r " +
+            "WHERE r.event.id = e.id AND r.status = 'CONFIRMED' " +
+            "GROUP BY r.event.id) < e.participantLimit) " +
             "AND ((COALESCE (:rangeStart) IS NOT NULL AND COALESCE (:rangeEnd) IS NOT NULL " +
             "AND e.eventDate BETWEEN :rangeStart AND :rangeEnd) " +
             "OR ((COALESCE (:rangeStart) IS NULL OR COALESCE (:rangeEnd) IS NULL) AND e.eventDate > CURRENT_TIMESTAMP)) " +
             "AND e.state = 'PUBLISHED' " +
+            "GROUP BY e " +
             "ORDER BY e.eventDate ASC")
     Page<Event> findAllPublishedEventsByParameters(@Param("searchText") String searchText,
                                                    @Param("categoryIds") List<Long> categoryIds,

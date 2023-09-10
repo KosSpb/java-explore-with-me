@@ -36,7 +36,7 @@ public class EventRequestDto {
     private LocationRequestDto location;
     private Boolean paid;
     @Min(0)
-    private Integer participantLimit;
+    private Long participantLimit;
     private Boolean requestModeration;
     private EventModerationAction stateAction;
     @NotBlank(groups = OnCreate.class, message = "Field: title. Error: must not be blank or null.")

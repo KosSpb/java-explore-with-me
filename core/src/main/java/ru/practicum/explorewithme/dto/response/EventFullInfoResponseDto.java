@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 public class EventFullInfoResponseDto {
     private String annotation;
     private CategoryResponseDto category;
-    private Integer confirmedRequests;
+    private Long confirmedRequests;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdOn;
     private String description;
@@ -26,7 +26,7 @@ public class EventFullInfoResponseDto {
     private InitiatorResponseDto initiator;
     private LocationResponseDto location;
     private Boolean paid;
-    private Integer participantLimit;
+    private Long participantLimit;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
     private Boolean requestModeration;

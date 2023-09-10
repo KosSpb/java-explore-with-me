@@ -9,6 +9,7 @@ import ru.practicum.explorewithme.StatsResponseDto;
 import ru.practicum.explorewithme.client.StatsClient;
 import ru.practicum.explorewithme.dao.CategoryRepository;
 import ru.practicum.explorewithme.dao.EventRepository;
+import ru.practicum.explorewithme.dao.RequestForEventRepository;
 import ru.practicum.explorewithme.dao.UserRepository;
 import ru.practicum.explorewithme.dto.request.EventRequestDto;
 import ru.practicum.explorewithme.dto.response.EventFullInfoResponseDto;
@@ -35,6 +36,7 @@ public class EventService {
     private final UserRepository userRepository;
     private final LocationService locationService;
     private final EventMapper eventMapper;
+    private final RequestForEventRepository requestForEventRepository;
     private final DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
@@ -43,13 +45,15 @@ public class EventService {
                         CategoryRepository categoryRepository,
                         UserRepository userRepository,
                         LocationService locationService,
-                        EventMapper eventMapper) {
+                        EventMapper eventMapper,
+                        RequestForEventRepository requestForEventRepository) {
         this.statsClient = statsClient;
         this.eventRepository = eventRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
         this.locationService = locationService;
         this.eventMapper = eventMapper;
+        this.requestForEventRepository = requestForEventRepository;
     }
 
     public Collection<EventResponseDto> getAllEventsCreatedByUser(long userId, int from, int size) {
@@ -66,16 +70,13 @@ public class EventService {
         } else {
             List<EventViews> eventsViews = getViewsOfAllEvents(eventsCreatedByUser);
 
+            List<ConfirmedRequestsQuantity> confirmedRequestsQuantityByEvents =
+                    requestForEventRepository.countConfirmedRequestsByEvents(eventsCreatedByUser);
+
             return eventsCreatedByUser.stream()
                     .map(eventMapper::eventToShortDto)
-                    .peek(eventResponseDto -> {
-                        Long views = eventsViews.stream()
-                                .filter(eventViews -> eventResponseDto.getId().equals(eventViews.getEventId()))
-                                .findFirst()
-                                .map(EventViews::getViews)
-                                .orElse(0L);
-                        eventResponseDto.setViews(views);
-                    })
+                    .peek(eventResponseDto -> setViewsAndConfirmedRequests(
+                            eventsViews, confirmedRequestsQuantityByEvents, eventResponseDto))
                     .collect(Collectors.toUnmodifiableList());
         }
     }
@@ -94,7 +95,7 @@ public class EventService {
             eventRequestDto.setPaid(false);
         }
         if (eventRequestDto.getParticipantLimit() == null) {
-            eventRequestDto.setParticipantLimit(0);
+            eventRequestDto.setParticipantLimit(0L);
         }
         if (eventRequestDto.getRequestModeration() == null) {
             eventRequestDto.setRequestModeration(true);
@@ -105,11 +106,11 @@ public class EventService {
         Event eventToCreate =
                 eventMapper.dtoToEvent(eventRequestDto, categoryOfEvent, initiatorOfEvent, createdLocation);
         eventToCreate.setState(EventModerationState.PENDING);
-        eventToCreate.setConfirmedRequests(0);
 
         EventFullInfoResponseDto createdEventResponseDto =
                 eventMapper.eventToFullDto(eventRepository.save(eventToCreate));
         createdEventResponseDto.setViews(0L);
+        createdEventResponseDto.setConfirmedRequests(0L);
 
         return createdEventResponseDto;
     }
@@ -127,7 +128,15 @@ public class EventService {
                     "Event with id=" + eventId + " was not found");
         }
 
-        return getEventFullInfoResponseDtoWithViews(requiredEvent);
+        EventFullInfoResponseDto eventFullInfoResponseDto = getEventFullInfoResponseDtoWithViews(requiredEvent);
+
+        ConfirmedRequestsQuantity confirmedRequestsQuantity =
+                requestForEventRepository.countConfirmedRequestsBySingleEvent(requiredEvent);
+
+        eventFullInfoResponseDto.setConfirmedRequests(
+                confirmedRequestsQuantity == null ? 0L : confirmedRequestsQuantity.getConfirmedRequests());
+
+        return eventFullInfoResponseDto;
     }
 
     public EventFullInfoResponseDto updateEventByUser(EventRequestDto eventRequestDto, long userId, long eventId) {
@@ -154,6 +163,7 @@ public class EventService {
         EventFullInfoResponseDto updatedEventResponseDto =
                 eventMapper.eventToFullDto(eventRepository.save(eventToUpdate));
         updatedEventResponseDto.setViews(0L);
+        updatedEventResponseDto.setConfirmedRequests(0L);
 
         return updatedEventResponseDto;
     }
@@ -181,6 +191,9 @@ public class EventService {
         } else {
             List<EventViews> eventsViews = getViewsOfAllEvents(requestedEvents);
 
+            List<ConfirmedRequestsQuantity> confirmedRequestsQuantityByEvents =
+                    requestForEventRepository.countConfirmedRequestsByEvents(requestedEvents);
+
             return requestedEvents.stream()
                     .map(eventMapper::eventToFullDto)
                     .peek(eventResponseDto -> {
@@ -190,6 +203,14 @@ public class EventService {
                                 .map(EventViews::getViews)
                                 .orElse(0L);
                         eventResponseDto.setViews(views);
+
+                        Long confirmedRequests = confirmedRequestsQuantityByEvents.stream()
+                                .filter(quantityByEvent -> quantityByEvent.getEvent().getId()
+                                        .equals(eventResponseDto.getId()))
+                                .findFirst()
+                                .map(ConfirmedRequestsQuantity::getConfirmedRequests)
+                                .orElse(0L);
+                        eventResponseDto.setConfirmedRequests(confirmedRequests);
                     })
                     .collect(Collectors.toUnmodifiableList());
         }
@@ -222,6 +243,7 @@ public class EventService {
         EventFullInfoResponseDto updatedEventResponseDto =
                 eventMapper.eventToFullDto(eventRepository.save(eventToUpdate));
         updatedEventResponseDto.setViews(0L);
+        updatedEventResponseDto.setConfirmedRequests(0L);
 
         return updatedEventResponseDto;
     }
@@ -252,31 +274,22 @@ public class EventService {
         }
 
         List<EventViews> eventsViews = getViewsOfAllEvents(publishedEvents);
+        List<ConfirmedRequestsQuantity> confirmedRequestsQuantityByEvents =
+                requestForEventRepository.countConfirmedRequestsByEvents(publishedEvents);
+
         registerRequestToEndpoint(requestURI, remoteIpAddress);
 
         if (sortType == EventsSortType.EVENT_DATE) {
             return publishedEvents.stream()
                     .map(eventMapper::eventToShortDto)
-                    .peek(eventResponseDto -> {
-                        Long views = eventsViews.stream()
-                                .filter(eventViews -> eventResponseDto.getId().equals(eventViews.getEventId()))
-                                .findFirst()
-                                .map(EventViews::getViews)
-                                .orElse(0L);
-                        eventResponseDto.setViews(views);
-                    })
+                    .peek(eventResponseDto -> setViewsAndConfirmedRequests(
+                            eventsViews, confirmedRequestsQuantityByEvents, eventResponseDto))
                     .collect(Collectors.toUnmodifiableList());
         } else {
             return publishedEvents.stream()
                     .map(eventMapper::eventToShortDto)
-                    .peek(eventResponseDto -> {
-                        Long views = eventsViews.stream()
-                                .filter(eventViews -> eventResponseDto.getId().equals(eventViews.getEventId()))
-                                .findFirst()
-                                .map(EventViews::getViews)
-                                .orElse(0L);
-                        eventResponseDto.setViews(views);
-                    })
+                    .peek(eventResponseDto -> setViewsAndConfirmedRequests(
+                            eventsViews, confirmedRequestsQuantityByEvents, eventResponseDto))
                     .sorted(Comparator.comparing(EventResponseDto::getViews).reversed())
                     .collect(Collectors.toUnmodifiableList());
         }
@@ -293,9 +306,32 @@ public class EventService {
         }
 
         EventFullInfoResponseDto eventFullInfoResponseDto = getEventFullInfoResponseDtoWithViews(publishedEvent);
+        ConfirmedRequestsQuantity confirmedRequestsQuantity =
+                requestForEventRepository.countConfirmedRequestsBySingleEvent(publishedEvent);
+
+        eventFullInfoResponseDto.setConfirmedRequests(
+                confirmedRequestsQuantity == null ? 0L : confirmedRequestsQuantity.getConfirmedRequests());
 
         registerRequestToEndpoint(requestURI, remoteIpAddress);
         return eventFullInfoResponseDto;
+    }
+
+    private void setViewsAndConfirmedRequests(List<EventViews> eventsViews,
+                                              List<ConfirmedRequestsQuantity> confirmedRequestsQuantityByEvents,
+                                              EventResponseDto eventResponseDto) {
+        Long views = eventsViews.stream()
+                .filter(eventViews -> eventResponseDto.getId().equals(eventViews.getEventId()))
+                .findFirst()
+                .map(EventViews::getViews)
+                .orElse(0L);
+        eventResponseDto.setViews(views);
+
+        Long confirmedRequests = confirmedRequestsQuantityByEvents.stream()
+                .filter(quantityByEvent -> quantityByEvent.getEvent().getId().equals(eventResponseDto.getId()))
+                .findFirst()
+                .map(ConfirmedRequestsQuantity::getConfirmedRequests)
+                .orElse(0L);
+        eventResponseDto.setConfirmedRequests(confirmedRequests);
     }
 
     private void updateEventFields(EventRequestDto eventRequestDto, Event eventToUpdate) {

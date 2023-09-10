@@ -6,11 +6,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.dao.CompilationRepository;
 import ru.practicum.explorewithme.dao.EventRepository;
+import ru.practicum.explorewithme.dao.RequestForEventRepository;
 import ru.practicum.explorewithme.dto.request.CompilationRequestDto;
 import ru.practicum.explorewithme.dto.response.CompilationResponseDto;
+import ru.practicum.explorewithme.dto.response.EventResponseDto;
 import ru.practicum.explorewithme.exception.NotFoundException;
 import ru.practicum.explorewithme.mapper.CompilationMapper;
+import ru.practicum.explorewithme.mapper.EventMapper;
 import ru.practicum.explorewithme.model.Compilation;
+import ru.practicum.explorewithme.model.ConfirmedRequestsQuantity;
 import ru.practicum.explorewithme.model.Event;
 
 import java.util.Collection;
@@ -24,14 +28,20 @@ public class CompilationService {
     private final CompilationRepository compilationRepository;
     private final EventRepository eventRepository;
     private final CompilationMapper compilationMapper;
+    private final EventMapper eventMapper;
+    private final RequestForEventRepository requestForEventRepository;
 
     @Autowired
     public CompilationService(CompilationRepository compilationRepository,
                               EventRepository eventRepository,
-                              CompilationMapper compilationMapper) {
+                              CompilationMapper compilationMapper,
+                              EventMapper eventMapper,
+                              RequestForEventRepository requestForEventRepository) {
         this.compilationRepository = compilationRepository;
         this.eventRepository = eventRepository;
         this.compilationMapper = compilationMapper;
+        this.eventMapper = eventMapper;
+        this.requestForEventRepository = requestForEventRepository;
     }
 
     public Collection<CompilationResponseDto> getAllEventsCompilations(Boolean pinned, int from, int size) {
@@ -39,8 +49,19 @@ public class CompilationService {
         List<Compilation> requestedCompilations =
                 compilationRepository.findRequiredCompilations(pinned, pageRequest).getContent();
 
+        Set<Event> eventsOfCompilation = requestedCompilations.stream()
+                .flatMap(compilation -> compilation.getEvents().stream())
+                .collect(Collectors.toSet());
+
+        Set<EventResponseDto> eventDtosOfCompilation =
+                getEventResponseDtosWithConfirmedRequests(eventsOfCompilation);
+
         return requestedCompilations.stream()
-                .map(compilationMapper::compilationToDto)
+                .map(compilation -> compilationMapper.compilationToDto(compilation,
+                        eventDtosOfCompilation.stream()
+                                .filter(eventResponseDto -> compilation.getEvents().stream()
+                                        .anyMatch(event -> eventResponseDto.getId().equals(event.getId())))
+                                .collect(Collectors.toSet())))
                 .collect(Collectors.toUnmodifiableList());
     }
 
@@ -48,7 +69,11 @@ public class CompilationService {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(() -> {
             throw new NotFoundException("get compilation by id: Compilation with id=" + compId + " was not found");
         });
-        return compilationMapper.compilationToDto(compilation);
+
+        Set<EventResponseDto> eventDtosOfCompilation =
+                getEventResponseDtosWithConfirmedRequests(compilation.getEvents());
+
+        return compilationMapper.compilationToDto(compilation, eventDtosOfCompilation);
     }
 
     public CompilationResponseDto createCompilationByAdmin(CompilationRequestDto compilationRequestDto) {
@@ -63,9 +88,12 @@ public class CompilationService {
             eventsOfCompilation = eventRepository.findByIdIn(compilationRequestDto.getEvents());
         }
 
+        Set<EventResponseDto> eventDtosOfCompilation =
+                getEventResponseDtosWithConfirmedRequests(eventsOfCompilation);
+
         return compilationMapper.compilationToDto(
-                compilationRepository.save(
-                        compilationMapper.dtoToCompilation(compilationRequestDto, eventsOfCompilation)));
+                compilationRepository.save(compilationMapper.dtoToCompilation(
+                        compilationRequestDto, eventsOfCompilation)), eventDtosOfCompilation);
     }
 
     public void deleteCompilationByAdmin(long compId) {
@@ -94,6 +122,36 @@ public class CompilationService {
         }
         compilationToUpdate.setTitle(compilationToUpdate.getTitle());
 
-        return compilationMapper.compilationToDto(compilationRepository.save(compilationToUpdate));
+        Set<EventResponseDto> eventDtosOfCompilation =
+                getEventResponseDtosWithConfirmedRequests(compilationToUpdate.getEvents());
+
+        return compilationMapper.compilationToDto(
+                compilationRepository.save(compilationToUpdate), eventDtosOfCompilation);
+    }
+
+    private Set<EventResponseDto> getEventResponseDtosWithConfirmedRequests(Set<Event> eventsOfCompilation) {
+        List<ConfirmedRequestsQuantity> confirmedRequestsQuantityByEvents;
+        Set<EventResponseDto> eventDtosOfCompilation;
+
+        if (!eventsOfCompilation.isEmpty()) {
+            confirmedRequestsQuantityByEvents =
+                    requestForEventRepository.countConfirmedRequestsByEvents(eventsOfCompilation);
+
+            eventDtosOfCompilation = eventsOfCompilation.stream()
+                    .map(eventMapper::eventToShortDto)
+                    .peek(eventResponseDto -> {
+                        Long confirmedRequests = confirmedRequestsQuantityByEvents.stream()
+                                .filter(quantityByEvent -> quantityByEvent.getEvent().getId()
+                                        .equals(eventResponseDto.getId()))
+                                .findFirst()
+                                .map(ConfirmedRequestsQuantity::getConfirmedRequests)
+                                .orElse(0L);
+                        eventResponseDto.setConfirmedRequests(confirmedRequests);
+                    })
+                    .collect(Collectors.toSet());
+        } else {
+            eventDtosOfCompilation = Collections.emptySet();
+        }
+        return eventDtosOfCompilation;
     }
 }

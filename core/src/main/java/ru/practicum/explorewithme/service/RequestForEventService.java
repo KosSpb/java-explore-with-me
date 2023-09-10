@@ -15,6 +15,7 @@ import ru.practicum.explorewithme.exception.IncorrectRequestException;
 import ru.practicum.explorewithme.exception.LimitReachedException;
 import ru.practicum.explorewithme.exception.NotFoundException;
 import ru.practicum.explorewithme.mapper.RequestForEventMapper;
+import ru.practicum.explorewithme.model.ConfirmedRequestsQuantity;
 import ru.practicum.explorewithme.model.Event;
 import ru.practicum.explorewithme.model.RequestForEvent;
 import ru.practicum.explorewithme.model.User;
@@ -77,7 +78,12 @@ public class RequestForEventService {
                     "Pre-moderation of requests is disabled. Confirmation is not required");
         }
 
-        if (eventToRequestIn.getConfirmedRequests().equals(eventToRequestIn.getParticipantLimit())) {
+        ConfirmedRequestsQuantity confirmedRequestsQuantity =
+                requestForEventRepository.countConfirmedRequestsBySingleEvent(eventToRequestIn);
+        Long counterOfConfirmedRequests =
+                confirmedRequestsQuantity == null ? 0L : confirmedRequestsQuantity.getConfirmedRequests();
+
+        if (counterOfConfirmedRequests.equals(eventToRequestIn.getParticipantLimit())) {
             throw new LimitReachedException("update status of requests for event: " +
                     "The participant limit has been reached");
         }
@@ -94,7 +100,7 @@ public class RequestForEventService {
                         " must have status PENDING");
             }
 
-            if (eventToRequestIn.getConfirmedRequests().equals(eventToRequestIn.getParticipantLimit())) {
+            if (counterOfConfirmedRequests.equals(eventToRequestIn.getParticipantLimit())) {
                 requestForEvent.setStatus(RequestForEventStatus.CANCELED);
                 rejectedRequests.add(requestForEventMapper.requestForEventToDto(requestForEvent));
             }
@@ -106,8 +112,7 @@ public class RequestForEventService {
                 requestForEvent.setStatus(RequestForEventStatus.CONFIRMED);
                 confirmedRequests.add(requestForEventMapper.requestForEventToDto(requestForEvent));
 
-                eventToRequestIn.setConfirmedRequests(eventToRequestIn.getConfirmedRequests() + 1);
-                eventRepository.save(eventToRequestIn);
+                counterOfConfirmedRequests++;
             }
         }
         requestForEventRepository.saveAll(requestsForEventToUpdate);
@@ -150,8 +155,13 @@ public class RequestForEventService {
                     "It is impossible to participate in an unpublished event");
         }
 
+        ConfirmedRequestsQuantity confirmedRequestsQuantity =
+                requestForEventRepository.countConfirmedRequestsBySingleEvent(eventToRequestIn);
+        Long counterOfConfirmedRequests =
+                confirmedRequestsQuantity == null ? 0L : confirmedRequestsQuantity.getConfirmedRequests();
+
         if (eventToRequestIn.getParticipantLimit() != 0
-                && eventToRequestIn.getConfirmedRequests().equals(eventToRequestIn.getParticipantLimit())) {
+                && counterOfConfirmedRequests.equals(eventToRequestIn.getParticipantLimit())) {
             throw new LimitReachedException("create request for event: The participant limit has been reached");
         }
 
@@ -170,9 +180,6 @@ public class RequestForEventService {
 
         if (!eventToRequestIn.getRequestModeration() || eventToRequestIn.getParticipantLimit() == 0) {
             requestForEvent.setStatus(RequestForEventStatus.CONFIRMED);
-            eventToRequestIn.setConfirmedRequests(eventToRequestIn.getConfirmedRequests() + 1);
-            eventRepository.save(eventToRequestIn);
-            requestForEvent.setEvent(eventToRequestIn);
         }
 
         return requestForEventMapper.requestForEventToDto(requestForEventRepository.save(requestForEvent));
@@ -185,17 +192,6 @@ public class RequestForEventService {
         RequestForEvent requestForEvent = requestForEventRepository.findById(requestId).orElseThrow(() -> {
             throw new NotFoundException("cancel request for event: Request with id=" + requestId + " was not found");
         });
-
-        if (requestForEvent.getStatus() == RequestForEventStatus.CONFIRMED) {
-            Event eventOfCanceledRequest =
-                    eventRepository.findById(requestForEvent.getEvent().getId()).orElseThrow(() -> {
-                        throw new NotFoundException("cancel request for event: Event with id="
-                                + requestForEvent.getEvent().getId() + " was not found");
-                    });
-
-            eventOfCanceledRequest.setConfirmedRequests(eventOfCanceledRequest.getConfirmedRequests() - 1);
-            eventRepository.save(eventOfCanceledRequest);
-        }
 
         requestForEvent.setStatus(RequestForEventStatus.CANCELED);
         return requestForEventMapper.requestForEventToDto(requestForEventRepository.save(requestForEvent));
