@@ -50,7 +50,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "(SELECT COUNT(r.id) " +
             "FROM RequestForEvent AS r " +
             "WHERE r.event.id = e.id AND r.status = 'CONFIRMED' " +
-            "GROUP BY r.event.id) < e.participantLimit) " +
+            "GROUP BY r.event.id) < e.participantLimit OR e.participantLimit = 0) " +
             "AND ((COALESCE (:rangeStart) IS NOT NULL AND COALESCE (:rangeEnd) IS NOT NULL " +
             "AND e.eventDate BETWEEN :rangeStart AND :rangeEnd) " +
             "OR ((COALESCE (:rangeStart) IS NULL OR COALESCE (:rangeEnd) IS NULL) AND e.eventDate > CURRENT_TIMESTAMP)) " +
