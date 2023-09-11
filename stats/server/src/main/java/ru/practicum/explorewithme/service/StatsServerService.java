@@ -1,12 +1,12 @@
 package ru.practicum.explorewithme.service;
 
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explorewithme.StatsRequestDto;
 import ru.practicum.explorewithme.StatsResponseDto;
 import ru.practicum.explorewithme.dao.StatsServerRepository;
+import ru.practicum.explorewithme.exception.IncorrectRequestException;
 import ru.practicum.explorewithme.mapper.StatsServerMapper;
 import ru.practicum.explorewithme.model.HitCount;
 
@@ -22,9 +22,9 @@ public class StatsServerService {
     private final StatsServerMapper mapper;
 
     @Autowired
-    public StatsServerService(StatsServerRepository statsServerRepository) {
+    public StatsServerService(StatsServerRepository statsServerRepository, StatsServerMapper mapper) {
         this.statsServerRepository = statsServerRepository;
-        this.mapper = Mappers.getMapper(StatsServerMapper.class);
+        this.mapper = mapper;
     }
 
     public StatsResponseDto registerEndpointHit(StatsRequestDto statsRequestDto) {
@@ -34,6 +34,11 @@ public class StatsServerService {
     @Transactional(readOnly = true)
     public Collection<StatsResponseDto> getStats(LocalDateTime start, LocalDateTime end,
                                                  List<String> uris, boolean unique) {
+
+        if (start != null && end != null && start.isAfter(end)) {
+            throw new IncorrectRequestException("get stats from statistics service: " +
+                    "Start time cannot be after end time");
+        }
 
         List<HitCount> countedHits =
                 statsServerRepository.countHitsForListedUrisInTimeRangeConsideringIpUniqueness(start, end, uris, unique);
