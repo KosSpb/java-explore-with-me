@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import ru.practicum.explorewithme.enums.EventModerationState;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -23,7 +24,7 @@ public class EventFullInfoResponseDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     private Long id;
-    private InitiatorResponseDto initiator;
+    private UserResponseDto initiator;
     private LocationResponseDto location;
     private Boolean paid;
     private Long participantLimit;
@@ -33,4 +34,5 @@ public class EventFullInfoResponseDto {
     private EventModerationState state;
     private String title;
     private Long views;
+    private List<CommentResponseDto> comments;
 }

@@ -5,12 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.explorewithme.dto.request.CommentRequestDto;
 import ru.practicum.explorewithme.dto.request.EventRequestDto;
 import ru.practicum.explorewithme.dto.request.UpdateStatusOfRequestsForEventDto;
-import ru.practicum.explorewithme.dto.response.AllTypeRequestsForEventsResponseDto;
-import ru.practicum.explorewithme.dto.response.EventFullInfoResponseDto;
-import ru.practicum.explorewithme.dto.response.EventResponseDto;
-import ru.practicum.explorewithme.dto.response.RequestForEventResponseDto;
+import ru.practicum.explorewithme.dto.response.*;
+import ru.practicum.explorewithme.service.CommentService;
 import ru.practicum.explorewithme.service.EventService;
 import ru.practicum.explorewithme.service.RequestForEventService;
 import ru.practicum.explorewithme.validation.OnCreate;
@@ -27,11 +26,15 @@ import java.util.Collection;
 public class PrivateController {
     private final EventService eventService;
     private final RequestForEventService requestForEventService;
+    private final CommentService commentService;
 
     @Autowired
-    public PrivateController(EventService eventService, RequestForEventService requestForEventService) {
+    public PrivateController(EventService eventService,
+                             RequestForEventService requestForEventService,
+                             CommentService commentService) {
         this.eventService = eventService;
         this.requestForEventService = requestForEventService;
+        this.commentService = commentService;
     }
 
     @GetMapping("/events")
@@ -127,5 +130,41 @@ public class PrivateController {
         log.info("cancelRequestForEventByUser - request for cancellation of request with id {} for event " +
                 "by user with id {} was processed.", requestId, userId);
         return cancelledRequestForEvent;
+    }
+
+    @PostMapping("/comments")
+    @ResponseStatus(HttpStatus.CREATED)
+    public CommentFullInfoResponseDto createCommentByUser(
+            @RequestBody @Valid CommentRequestDto commentRequestDto,
+            @PathVariable(value = "userId") @Positive long userId,
+            @RequestParam(value = "eventId") @Positive long eventId) {
+
+        CommentFullInfoResponseDto createdComment = commentService.createCommentByUser(commentRequestDto, userId, eventId);
+        log.info("createCommentByUser - request for comment [\"{}\"] creation for event with id {} " +
+                "by user with id {} was processed.", commentRequestDto, eventId, userId);
+        return createdComment;
+    }
+
+    @PatchMapping("/comments/{commentId}")
+    public CommentFullInfoResponseDto updateCommentByUser(
+            @RequestBody @Valid CommentRequestDto commentRequestDto,
+            @PathVariable(value = "userId") @Positive long userId,
+            @PathVariable(value = "commentId") @Positive long commentId) {
+
+        CommentFullInfoResponseDto updatedComment = commentService.updateCommentByUser(commentRequestDto, userId, commentId);
+        log.info("updateCommentByUser - request for update of comment with id {} to [\"{}\"] " +
+                "by user with id {} was processed.", commentId, commentRequestDto, userId);
+        return updatedComment;
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCommentByUser(
+            @PathVariable(value = "userId") @Positive long userId,
+            @PathVariable(value = "commentId") @Positive long commentId) {
+
+        commentService.deleteCommentByUser(userId, commentId);
+        log.info("deleteCommentByUser - request for deletion of comment with id {} " +
+                "by user with id {} was processed.", commentId, userId);
     }
 }

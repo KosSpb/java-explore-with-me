@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -19,8 +20,9 @@ public class EventResponseDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     private Long id;
-    private InitiatorResponseDto initiator;
+    private UserResponseDto initiator;
     private Boolean paid;
     private String title;
     private Long views;
+    private List<CommentResponseDto> comments;
 }
