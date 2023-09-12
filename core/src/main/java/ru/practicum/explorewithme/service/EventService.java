@@ -7,10 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.StatsRequestDto;
 import ru.practicum.explorewithme.StatsResponseDto;
 import ru.practicum.explorewithme.client.StatsClient;
-import ru.practicum.explorewithme.dao.CategoryRepository;
-import ru.practicum.explorewithme.dao.EventRepository;
-import ru.practicum.explorewithme.dao.RequestForEventRepository;
-import ru.practicum.explorewithme.dao.UserRepository;
+import ru.practicum.explorewithme.dao.*;
 import ru.practicum.explorewithme.dto.request.EventRequestDto;
 import ru.practicum.explorewithme.dto.response.EventFullInfoResponseDto;
 import ru.practicum.explorewithme.dto.response.EventResponseDto;
@@ -20,6 +17,7 @@ import ru.practicum.explorewithme.enums.EventsSortType;
 import ru.practicum.explorewithme.exception.ConditionsNotMetException;
 import ru.practicum.explorewithme.exception.IncorrectRequestException;
 import ru.practicum.explorewithme.exception.NotFoundException;
+import ru.practicum.explorewithme.mapper.CommentMapper;
 import ru.practicum.explorewithme.mapper.EventMapper;
 import ru.practicum.explorewithme.model.*;
 
@@ -37,6 +35,8 @@ public class EventService {
     private final LocationService locationService;
     private final EventMapper eventMapper;
     private final RequestForEventRepository requestForEventRepository;
+    private final CommentRepository commentRepository;
+    private final CommentMapper commentMapper;
     private final DateTimeFormatter pattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Autowired
@@ -46,7 +46,9 @@ public class EventService {
                         UserRepository userRepository,
                         LocationService locationService,
                         EventMapper eventMapper,
-                        RequestForEventRepository requestForEventRepository) {
+                        RequestForEventRepository requestForEventRepository,
+                        CommentRepository commentRepository,
+                        CommentMapper commentMapper) {
         this.statsClient = statsClient;
         this.eventRepository = eventRepository;
         this.categoryRepository = categoryRepository;
@@ -54,6 +56,8 @@ public class EventService {
         this.locationService = locationService;
         this.eventMapper = eventMapper;
         this.requestForEventRepository = requestForEventRepository;
+        this.commentRepository = commentRepository;
+        this.commentMapper = commentMapper;
     }
 
     public Collection<EventResponseDto> getAllEventsCreatedByUser(long userId, int from, int size) {
@@ -73,10 +77,12 @@ public class EventService {
             List<ConfirmedRequestsQuantity> confirmedRequestsQuantityByEvents =
                     requestForEventRepository.countConfirmedRequestsByEvents(eventsCreatedByUser);
 
+            List<Comment> commentsOfEvents = commentRepository.findByEventInOrderByIdAsc(eventsCreatedByUser);
+
             return eventsCreatedByUser.stream()
                     .map(eventMapper::eventToShortDto)
                     .peek(eventResponseDto -> setViewsAndConfirmedRequests(
-                            eventsViews, confirmedRequestsQuantityByEvents, eventResponseDto))
+                            eventsViews, confirmedRequestsQuantityByEvents, commentsOfEvents, eventResponseDto))
                     .collect(Collectors.toUnmodifiableList());
         }
     }
@@ -111,6 +117,7 @@ public class EventService {
                 eventMapper.eventToFullDto(eventRepository.save(eventToCreate));
         createdEventResponseDto.setViews(0L);
         createdEventResponseDto.setConfirmedRequests(0L);
+        createdEventResponseDto.setComments(Collections.emptyList());
 
         return createdEventResponseDto;
     }
@@ -135,6 +142,19 @@ public class EventService {
 
         eventFullInfoResponseDto.setConfirmedRequests(
                 confirmedRequestsQuantity == null ? 0L : confirmedRequestsQuantity.getConfirmedRequests());
+
+        List<Comment> commentsOfEvent = commentRepository.findByEventOrderByIdAsc(requiredEvent);
+        Map<Long, Boolean> authorIsInitiatorOfEventByCommentIds = commentsOfEvent.stream()
+                .collect(Collectors.toMap(
+                        Comment::getId,
+                        comment -> comment.getEvent().getInitiator().getId().equals(comment.getAuthor().getId())));
+
+        eventFullInfoResponseDto.setComments(commentsOfEvent.stream()
+                .map(commentMapper::commentToShortDto)
+                .peek(commentResponseDto ->
+                        commentResponseDto.setIsAuthorInitiatorOfEvent(
+                                authorIsInitiatorOfEventByCommentIds.get(commentResponseDto.getId())))
+                .collect(Collectors.toUnmodifiableList()));
 
         return eventFullInfoResponseDto;
     }
@@ -164,6 +184,7 @@ public class EventService {
                 eventMapper.eventToFullDto(eventRepository.save(eventToUpdate));
         updatedEventResponseDto.setViews(0L);
         updatedEventResponseDto.setConfirmedRequests(0L);
+        updatedEventResponseDto.setComments(Collections.emptyList());
 
         return updatedEventResponseDto;
     }
@@ -194,24 +215,12 @@ public class EventService {
             List<ConfirmedRequestsQuantity> confirmedRequestsQuantityByEvents =
                     requestForEventRepository.countConfirmedRequestsByEvents(requestedEvents);
 
+            List<Comment> commentsOfEvents = commentRepository.findByEventInOrderByIdAsc(requestedEvents);
+
             return requestedEvents.stream()
                     .map(eventMapper::eventToFullDto)
-                    .peek(eventResponseDto -> {
-                        Long views = eventsViews.stream()
-                                .filter(eventViews -> eventResponseDto.getId().equals(eventViews.getEventId()))
-                                .findFirst()
-                                .map(EventViews::getViews)
-                                .orElse(0L);
-                        eventResponseDto.setViews(views);
-
-                        Long confirmedRequests = confirmedRequestsQuantityByEvents.stream()
-                                .filter(quantityByEvent -> quantityByEvent.getEvent().getId()
-                                        .equals(eventResponseDto.getId()))
-                                .findFirst()
-                                .map(ConfirmedRequestsQuantity::getConfirmedRequests)
-                                .orElse(0L);
-                        eventResponseDto.setConfirmedRequests(confirmedRequests);
-                    })
+                    .peek(eventResponseDto -> setViewsAndConfirmedRequests(
+                            eventsViews, confirmedRequestsQuantityByEvents, commentsOfEvents, eventResponseDto))
                     .collect(Collectors.toUnmodifiableList());
         }
     }
@@ -244,6 +253,7 @@ public class EventService {
                 eventMapper.eventToFullDto(eventRepository.save(eventToUpdate));
         updatedEventResponseDto.setViews(0L);
         updatedEventResponseDto.setConfirmedRequests(0L);
+        updatedEventResponseDto.setComments(Collections.emptyList());
 
         return updatedEventResponseDto;
     }
@@ -276,6 +286,7 @@ public class EventService {
         List<EventViews> eventsViews = getViewsOfAllEvents(publishedEvents);
         List<ConfirmedRequestsQuantity> confirmedRequestsQuantityByEvents =
                 requestForEventRepository.countConfirmedRequestsByEvents(publishedEvents);
+        List<Comment> commentsOfEvents = commentRepository.findByEventInOrderByIdAsc(publishedEvents);
 
         registerRequestToEndpoint(requestURI, remoteIpAddress);
 
@@ -283,13 +294,13 @@ public class EventService {
             return publishedEvents.stream()
                     .map(eventMapper::eventToShortDto)
                     .peek(eventResponseDto -> setViewsAndConfirmedRequests(
-                            eventsViews, confirmedRequestsQuantityByEvents, eventResponseDto))
+                            eventsViews, confirmedRequestsQuantityByEvents, commentsOfEvents, eventResponseDto))
                     .collect(Collectors.toUnmodifiableList());
         } else {
             return publishedEvents.stream()
                     .map(eventMapper::eventToShortDto)
                     .peek(eventResponseDto -> setViewsAndConfirmedRequests(
-                            eventsViews, confirmedRequestsQuantityByEvents, eventResponseDto))
+                            eventsViews, confirmedRequestsQuantityByEvents, commentsOfEvents, eventResponseDto))
                     .sorted(Comparator.comparing(EventResponseDto::getViews).reversed())
                     .collect(Collectors.toUnmodifiableList());
         }
@@ -312,12 +323,26 @@ public class EventService {
         eventFullInfoResponseDto.setConfirmedRequests(
                 confirmedRequestsQuantity == null ? 0L : confirmedRequestsQuantity.getConfirmedRequests());
 
+        List<Comment> commentsOfEvent = commentRepository.findByEventOrderByIdAsc(publishedEvent);
+        Map<Long, Boolean> authorIsInitiatorOfEventByCommentIds = commentsOfEvent.stream()
+                .collect(Collectors.toMap(
+                        Comment::getId,
+                        comment -> comment.getEvent().getInitiator().getId().equals(comment.getAuthor().getId())));
+
+        eventFullInfoResponseDto.setComments(commentsOfEvent.stream()
+                .map(commentMapper::commentToShortDto)
+                .peek(commentResponseDto ->
+                        commentResponseDto.setIsAuthorInitiatorOfEvent(
+                                authorIsInitiatorOfEventByCommentIds.get(commentResponseDto.getId())))
+                .collect(Collectors.toUnmodifiableList()));
+
         registerRequestToEndpoint(requestURI, remoteIpAddress);
         return eventFullInfoResponseDto;
     }
 
     private void setViewsAndConfirmedRequests(List<EventViews> eventsViews,
                                               List<ConfirmedRequestsQuantity> confirmedRequestsQuantityByEvents,
+                                              List<Comment> commentsOfEvents,
                                               EventResponseDto eventResponseDto) {
         Long views = eventsViews.stream()
                 .filter(eventViews -> eventResponseDto.getId().equals(eventViews.getEventId()))
@@ -332,6 +357,19 @@ public class EventService {
                 .map(ConfirmedRequestsQuantity::getConfirmedRequests)
                 .orElse(0L);
         eventResponseDto.setConfirmedRequests(confirmedRequests);
+
+        Map<Long, Boolean> authorIsInitiatorOfEventByCommentIds = commentsOfEvents.stream()
+                .collect(Collectors.toMap(
+                        Comment::getId,
+                        comment -> comment.getEvent().getInitiator().getId().equals(comment.getAuthor().getId())));
+
+        eventResponseDto.setComments(commentsOfEvents.stream()
+                .filter(comment -> comment.getEvent().getId().equals(eventResponseDto.getId()))
+                .map(commentMapper::commentToShortDto)
+                .peek(commentResponseDto ->
+                        commentResponseDto.setIsAuthorInitiatorOfEvent(
+                                authorIsInitiatorOfEventByCommentIds.get(commentResponseDto.getId())))
+                .collect(Collectors.toUnmodifiableList()));
     }
 
     private void updateEventFields(EventRequestDto eventRequestDto, Event eventToUpdate) {

@@ -6,8 +6,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import ru.practicum.explorewithme.model.Comment;
+import ru.practicum.explorewithme.model.Event;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
@@ -28,5 +30,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
                                                       @Param("rangeStart") LocalDateTime rangeStart,
                                                       @Param("rangeEnd") LocalDateTime rangeEnd,
                                                       Pageable pageable);
+
+    List<Comment> findByEventInOrderByIdAsc(Collection<Event> eventsCreatedByUser);
+
+    List<Comment> findByEventOrderByIdAsc(Event requiredEvent);
 
 }
