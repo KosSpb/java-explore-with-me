@@ -27,6 +27,7 @@ public class UserService {
     }
 
     public Collection<UserFullInfoResponseDto> getRequiredUsersByAdmin(List<Long> userIds, int from, int size) {
+
         Pageable pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
         List<User> requiredUsers = userRepository.findRequiredUsers(userIds, pageRequest).getContent();
 
@@ -36,10 +37,12 @@ public class UserService {
     }
 
     public UserFullInfoResponseDto createUserByAdmin(UserRequestDto userRequestDto) {
+
         return userMapper.userToDto(userRepository.save(userMapper.dtoToUser(userRequestDto)));
     }
 
     public void deleteUserByAdmin(long userId) {
+
         userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException("deletion of user: User with id=" + userId + " was not found");
         });

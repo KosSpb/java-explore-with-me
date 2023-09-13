@@ -35,10 +35,12 @@ public class CategoryService {
     }
 
     public CategoryResponseDto createCategoryByAdmin(CategoryRequestDto categoryRequestDto) {
+
         return categoryMapper.categoryToDto(categoryRepository.save(categoryMapper.dtoToCategory(categoryRequestDto)));
     }
 
     public void deleteCategoryByAdmin(long catId) {
+
         Category category = categoryRepository.findById(catId).orElseThrow(() -> {
             throw new NotFoundException("deletion of category: Category with id=" + catId + " was not found");
         });
@@ -52,6 +54,7 @@ public class CategoryService {
     }
 
     public CategoryResponseDto updateCategoryByAdmin(CategoryRequestDto categoryRequestDto, long catId) {
+
         Category categoryToUpdate = categoryRepository.findById(catId).orElseThrow(() -> {
             throw new NotFoundException("update of category: Category with id=" + catId + " was not found");
         });
@@ -61,6 +64,7 @@ public class CategoryService {
     }
 
     public Collection<CategoryResponseDto> getAllEventCategories(int from, int size) {
+
         Pageable pageRequest = PageRequest.of(from > 0 ? from / size : 0, size, Sort.by("id").ascending());
         List<Category> requestedCategories = categoryRepository.findAll(pageRequest).getContent();
 
@@ -70,6 +74,7 @@ public class CategoryService {
     }
 
     public CategoryResponseDto getEventCategoryById(long catId) {
+
         Category category = categoryRepository.findById(catId).orElseThrow(() -> {
             throw new NotFoundException("get category by id: Category with id=" + catId + " was not found");
         });

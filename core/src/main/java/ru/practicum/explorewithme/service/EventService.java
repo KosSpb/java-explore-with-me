@@ -61,6 +61,7 @@ public class EventService {
     }
 
     public Collection<EventResponseDto> getAllEventsCreatedByUser(long userId, int from, int size) {
+
         User eventsCreator = userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException("get all events created by user: User with id=" + userId + " was not found");
         });
@@ -77,17 +78,18 @@ public class EventService {
             List<ConfirmedRequestsQuantity> confirmedRequestsQuantityByEvents =
                     requestForEventRepository.countConfirmedRequestsByEvents(eventsCreatedByUser);
 
-            List<Comment> commentsOfEvents = commentRepository.findByEventInOrderByIdAsc(eventsCreatedByUser);
+            List<Comment> commentsOfEvents = commentRepository.findByEventInOrderByCreatedAsc(eventsCreatedByUser);
 
             return eventsCreatedByUser.stream()
                     .map(eventMapper::eventToShortDto)
-                    .peek(eventResponseDto -> setViewsAndConfirmedRequests(
+                    .peek(eventResponseDto -> setViewsAndConfirmedRequestsAndComments(
                             eventsViews, confirmedRequestsQuantityByEvents, commentsOfEvents, eventResponseDto))
                     .collect(Collectors.toUnmodifiableList());
         }
     }
 
     public EventFullInfoResponseDto createEventByUser(EventRequestDto eventRequestDto, long userId) {
+
         User initiatorOfEvent = userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException("creation of event: User with id=" + userId + " was not found");
         });
@@ -123,6 +125,7 @@ public class EventService {
     }
 
     public EventFullInfoResponseDto getEventCreatedByUserById(long userId, long eventId) {
+
         User eventCreator = userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException("get full info of event created by user: " +
                     "User with id=" + userId + " was not found");
@@ -143,7 +146,7 @@ public class EventService {
         eventFullInfoResponseDto.setConfirmedRequests(
                 confirmedRequestsQuantity == null ? 0L : confirmedRequestsQuantity.getConfirmedRequests());
 
-        List<Comment> commentsOfEvent = commentRepository.findByEventOrderByIdAsc(requiredEvent);
+        List<Comment> commentsOfEvent = commentRepository.findByEventOrderByCreatedAsc(requiredEvent);
         Map<Long, Boolean> authorIsInitiatorOfEventByCommentIds = commentsOfEvent.stream()
                 .collect(Collectors.toMap(
                         Comment::getId,
@@ -160,6 +163,7 @@ public class EventService {
     }
 
     public EventFullInfoResponseDto updateEventByUser(EventRequestDto eventRequestDto, long userId, long eventId) {
+
         User initiatorOfEvent = userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException("update of event by user: User with id=" + userId + " was not found");
         });
@@ -195,6 +199,7 @@ public class EventService {
                                                                                  LocalDateTime rangeStart,
                                                                                  LocalDateTime rangeEnd,
                                                                                  int from, int size) {
+
         Set<EventModerationState> statesAsEnums = null;
         if (statesOfEvent != null) {
             statesAsEnums = statesOfEvent.stream()
@@ -215,11 +220,11 @@ public class EventService {
             List<ConfirmedRequestsQuantity> confirmedRequestsQuantityByEvents =
                     requestForEventRepository.countConfirmedRequestsByEvents(requestedEvents);
 
-            List<Comment> commentsOfEvents = commentRepository.findByEventInOrderByIdAsc(requestedEvents);
+            List<Comment> commentsOfEvents = commentRepository.findByEventInOrderByCreatedAsc(requestedEvents);
 
             return requestedEvents.stream()
                     .map(eventMapper::eventToFullDto)
-                    .peek(eventResponseDto -> setViewsAndConfirmedRequests(
+                    .peek(eventResponseDto -> setViewsAndConfirmedRequestsAndComments(
                             eventsViews, confirmedRequestsQuantityByEvents, commentsOfEvents, eventResponseDto))
                     .collect(Collectors.toUnmodifiableList());
         }
@@ -227,6 +232,7 @@ public class EventService {
 
     public EventFullInfoResponseDto updateEventAndPublicationStatusEditByAdmin(EventRequestDto eventRequestDto,
                                                                                long eventId) {
+
         Event eventToUpdate = eventRepository.findById(eventId).orElseThrow(() -> {
             throw new NotFoundException("update of event by admin: Event with id=" + eventId + " was not found");
         });
@@ -268,6 +274,7 @@ public class EventService {
                                                               int from, int size,
                                                               String requestURI,
                                                               String remoteIpAddress) {
+
         if (rangeStart != null && rangeEnd != null && rangeStart.isAfter(rangeEnd)) {
             throw new IncorrectRequestException("get all published events: Start time cannot be after end time");
         }
@@ -286,20 +293,20 @@ public class EventService {
         List<EventViews> eventsViews = getViewsOfAllEvents(publishedEvents);
         List<ConfirmedRequestsQuantity> confirmedRequestsQuantityByEvents =
                 requestForEventRepository.countConfirmedRequestsByEvents(publishedEvents);
-        List<Comment> commentsOfEvents = commentRepository.findByEventInOrderByIdAsc(publishedEvents);
+        List<Comment> commentsOfEvents = commentRepository.findByEventInOrderByCreatedAsc(publishedEvents);
 
         registerRequestToEndpoint(requestURI, remoteIpAddress);
 
         if (sortType == EventsSortType.EVENT_DATE) {
             return publishedEvents.stream()
                     .map(eventMapper::eventToShortDto)
-                    .peek(eventResponseDto -> setViewsAndConfirmedRequests(
+                    .peek(eventResponseDto -> setViewsAndConfirmedRequestsAndComments(
                             eventsViews, confirmedRequestsQuantityByEvents, commentsOfEvents, eventResponseDto))
                     .collect(Collectors.toUnmodifiableList());
         } else {
             return publishedEvents.stream()
                     .map(eventMapper::eventToShortDto)
-                    .peek(eventResponseDto -> setViewsAndConfirmedRequests(
+                    .peek(eventResponseDto -> setViewsAndConfirmedRequestsAndComments(
                             eventsViews, confirmedRequestsQuantityByEvents, commentsOfEvents, eventResponseDto))
                     .sorted(Comparator.comparing(EventResponseDto::getViews).reversed())
                     .collect(Collectors.toUnmodifiableList());
@@ -309,6 +316,7 @@ public class EventService {
     public EventFullInfoResponseDto getFullInfoAboutPublishedEventById(long eventId,
                                                                        String requestURI,
                                                                        String remoteIpAddress) {
+
         Event publishedEvent = eventRepository.findByIdAndState(eventId, EventModerationState.PUBLISHED);
 
         if (publishedEvent == null) {
@@ -323,7 +331,7 @@ public class EventService {
         eventFullInfoResponseDto.setConfirmedRequests(
                 confirmedRequestsQuantity == null ? 0L : confirmedRequestsQuantity.getConfirmedRequests());
 
-        List<Comment> commentsOfEvent = commentRepository.findByEventOrderByIdAsc(publishedEvent);
+        List<Comment> commentsOfEvent = commentRepository.findByEventOrderByCreatedAsc(publishedEvent);
         Map<Long, Boolean> authorIsInitiatorOfEventByCommentIds = commentsOfEvent.stream()
                 .collect(Collectors.toMap(
                         Comment::getId,
@@ -340,10 +348,11 @@ public class EventService {
         return eventFullInfoResponseDto;
     }
 
-    private void setViewsAndConfirmedRequests(List<EventViews> eventsViews,
-                                              List<ConfirmedRequestsQuantity> confirmedRequestsQuantityByEvents,
-                                              List<Comment> commentsOfEvents,
-                                              EventResponseDto eventResponseDto) {
+    private void setViewsAndConfirmedRequestsAndComments(List<EventViews> eventsViews,
+                                                         List<ConfirmedRequestsQuantity> confirmedRequestsQuantityByEvents,
+                                                         List<Comment> commentsOfEvents,
+                                                         EventResponseDto eventResponseDto) {
+
         Long views = eventsViews.stream()
                 .filter(eventViews -> eventResponseDto.getId().equals(eventViews.getEventId()))
                 .findFirst()
@@ -373,6 +382,7 @@ public class EventService {
     }
 
     private void updateEventFields(EventRequestDto eventRequestDto, Event eventToUpdate) {
+
         if (eventRequestDto.getAnnotation() != null && !eventRequestDto.getAnnotation().isBlank()) {
             eventToUpdate.setAnnotation(eventRequestDto.getAnnotation());
         }
@@ -422,6 +432,7 @@ public class EventService {
     }
 
     private void registerRequestToEndpoint(String requestURI, String remoteIpAddress) {
+
         statsClient.registerEndpointHit(StatsRequestDto.builder()
                 .app("ewm-main-service")
                 .uri(requestURI)
@@ -431,6 +442,7 @@ public class EventService {
     }
 
     private List<EventViews> getViewsOfAllEvents(List<Event> events) {
+
         String startTime = LocalDateTime.now().minusYears(100).format(pattern);
         String endTime = LocalDateTime.now().plusYears(100).format(pattern);
 
@@ -446,6 +458,7 @@ public class EventService {
     }
 
     private EventFullInfoResponseDto getEventFullInfoResponseDtoWithViews(Event requiredEvent) {
+
         String startTime = LocalDateTime.now().minusYears(100).format(pattern);
         String endTime = LocalDateTime.now().plusYears(100).format(pattern);
         List<String> uris = Collections.singletonList("/events/" + requiredEvent.getId());

@@ -18,6 +18,7 @@ public interface CommentMapper {
     @Mapping(target = "author", source = "authorEntity")
     Comment dtoToComment(CommentRequestDto commentRequestDto, Event eventEntity, User authorEntity);
 
+    @Mapping(target = "authorName", source = "author.name")
     CommentResponseDto commentToShortDto(Comment comment);
 
     CommentFullInfoResponseDto commentToFullDto(Comment comment);

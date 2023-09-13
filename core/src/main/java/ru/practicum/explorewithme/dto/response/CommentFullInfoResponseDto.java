@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class CommentFullInfoResponseDto {
     private Long id;
     private String text;
-    private EventResponseDto event;
+    private EventResponseDtoOfComment event;
     private UserResponseDto author;
     private Boolean isAuthorInitiatorOfEvent;
     private Boolean isEdited;

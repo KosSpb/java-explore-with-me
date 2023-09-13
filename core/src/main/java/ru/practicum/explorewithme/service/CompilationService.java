@@ -17,10 +17,7 @@ import ru.practicum.explorewithme.model.Compilation;
 import ru.practicum.explorewithme.model.ConfirmedRequestsQuantity;
 import ru.practicum.explorewithme.model.Event;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,6 +42,7 @@ public class CompilationService {
     }
 
     public Collection<CompilationResponseDto> getAllEventsCompilations(Boolean pinned, int from, int size) {
+
         Pageable pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
         List<Compilation> requestedCompilations =
                 compilationRepository.findRequiredCompilations(pinned, pageRequest).getContent();
@@ -66,6 +64,7 @@ public class CompilationService {
     }
 
     public CompilationResponseDto getEventsCompilationById(Long compId) {
+
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(() -> {
             throw new NotFoundException("get compilation by id: Compilation with id=" + compId + " was not found");
         });
@@ -77,6 +76,7 @@ public class CompilationService {
     }
 
     public CompilationResponseDto createCompilationByAdmin(CompilationRequestDto compilationRequestDto) {
+
         if (compilationRequestDto.getPinned() == null) {
             compilationRequestDto.setPinned(false);
         }
@@ -97,6 +97,7 @@ public class CompilationService {
     }
 
     public void deleteCompilationByAdmin(long compId) {
+
         compilationRepository.findById(compId).orElseThrow(() -> {
             throw new NotFoundException("deletion of compilation: Compilation with id=" + compId + " was not found");
         });
@@ -104,6 +105,7 @@ public class CompilationService {
     }
 
     public CompilationResponseDto updateCompilationByAdmin(CompilationRequestDto compilationRequestDto, long compId) {
+
         Compilation compilationToUpdate = compilationRepository.findById(compId).orElseThrow(() -> {
             throw new NotFoundException("update of compilation: Compilation with id=" + compId + " was not found");
         });
@@ -130,24 +132,21 @@ public class CompilationService {
     }
 
     private Set<EventResponseDto> getEventResponseDtosWithConfirmedRequests(Set<Event> eventsOfCompilation) {
-        List<ConfirmedRequestsQuantity> confirmedRequestsQuantityByEvents;
+
+        Map<Long, Long> confirmedRequestsQuantityByEventIds;
         Set<EventResponseDto> eventDtosOfCompilation;
 
         if (!eventsOfCompilation.isEmpty()) {
-            confirmedRequestsQuantityByEvents =
-                    requestForEventRepository.countConfirmedRequestsByEvents(eventsOfCompilation);
+            confirmedRequestsQuantityByEventIds =
+                    requestForEventRepository.countConfirmedRequestsByEvents(eventsOfCompilation).stream()
+                            .collect(Collectors.toMap(
+                                    confirmedRequestsQuantity -> confirmedRequestsQuantity.getEvent().getId(),
+                                    ConfirmedRequestsQuantity::getConfirmedRequests));
 
             eventDtosOfCompilation = eventsOfCompilation.stream()
                     .map(eventMapper::eventToShortDto)
-                    .peek(eventResponseDto -> {
-                        Long confirmedRequests = confirmedRequestsQuantityByEvents.stream()
-                                .filter(quantityByEvent -> quantityByEvent.getEvent().getId()
-                                        .equals(eventResponseDto.getId()))
-                                .findFirst()
-                                .map(ConfirmedRequestsQuantity::getConfirmedRequests)
-                                .orElse(0L);
-                        eventResponseDto.setConfirmedRequests(confirmedRequests);
-                    })
+                    .peek(eventResponseDto -> eventResponseDto.setConfirmedRequests(
+                            confirmedRequestsQuantityByEventIds.get(eventResponseDto.getId())))
                     .collect(Collectors.toSet());
         } else {
             eventDtosOfCompilation = Collections.emptySet();

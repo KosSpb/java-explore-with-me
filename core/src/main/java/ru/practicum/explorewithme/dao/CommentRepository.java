@@ -31,8 +31,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
                                                       @Param("rangeEnd") LocalDateTime rangeEnd,
                                                       Pageable pageable);
 
-    List<Comment> findByEventInOrderByIdAsc(Collection<Event> eventsCreatedByUser);
+    List<Comment> findByEventInOrderByCreatedAsc(Collection<Event> eventsCreatedByUser);
 
-    List<Comment> findByEventOrderByIdAsc(Event requiredEvent);
+    List<Comment> findByEventOrderByCreatedAsc(Event requiredEvent);
 
 }

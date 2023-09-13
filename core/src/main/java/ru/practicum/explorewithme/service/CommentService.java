@@ -11,6 +11,7 @@ import ru.practicum.explorewithme.dto.request.CommentRequestDto;
 import ru.practicum.explorewithme.dto.response.CommentFullInfoResponseDto;
 import ru.practicum.explorewithme.enums.EventModerationState;
 import ru.practicum.explorewithme.exception.ConditionsNotMetException;
+import ru.practicum.explorewithme.exception.IncorrectRequestException;
 import ru.practicum.explorewithme.exception.NotFoundException;
 import ru.practicum.explorewithme.mapper.CommentMapper;
 import ru.practicum.explorewithme.model.Comment;
@@ -64,6 +65,7 @@ public class CommentService {
 
     public CommentFullInfoResponseDto createCommentByUser(CommentRequestDto commentRequestDto,
                                                           long userId, long eventId) {
+
         User author = userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException("create comment by user: User with id=" + userId + " was not found");
         });
@@ -86,12 +88,18 @@ public class CommentService {
 
     public CommentFullInfoResponseDto updateCommentByUser(CommentRequestDto commentRequestDto,
                                                           long userId, long commentId) {
+
         User author = userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException("update comment by user: User with id=" + userId + " was not found");
         });
         Comment commentToUpdate = commentRepository.findById(commentId).orElseThrow(() -> {
             throw new NotFoundException("update comment by user: Comment with id=" + commentId + " was not found");
         });
+
+        if (!author.getId().equals(commentToUpdate.getAuthor().getId())) {
+            throw new IncorrectRequestException("update comment by user: " +
+                    "It is forbidden to edit other user's comments");
+        }
 
         if (LocalDateTime.now().isAfter(commentToUpdate.getCreated().plusHours(1))) {
             throw new ConditionsNotMetException("update comment by user: Cannot edit a comment " +
@@ -114,16 +122,24 @@ public class CommentService {
     }
 
     public void deleteCommentByUser(long userId, long commentId) {
-        userRepository.findById(userId).orElseThrow(() -> {
+
+        User author = userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException("deletion of comment by user: User with id=" + userId + " was not found");
         });
-        commentRepository.findById(commentId).orElseThrow(() -> {
+        Comment commentToDelete = commentRepository.findById(commentId).orElseThrow(() -> {
             throw new NotFoundException("deletion of comment by user: Comment with id=" + commentId + " was not found");
         });
+
+        if (!author.getId().equals(commentToDelete.getAuthor().getId())) {
+            throw new IncorrectRequestException("deletion of comment by user: " +
+                    "It is forbidden to delete other user's comments");
+        }
+
         commentRepository.deleteById(commentId);
     }
 
     public void deleteCommentByAdmin(long commentId) {
+
         commentRepository.findById(commentId).orElseThrow(() -> {
             throw new NotFoundException("deletion of comment by admin: Comment with id=" + commentId + " was not found");
         });

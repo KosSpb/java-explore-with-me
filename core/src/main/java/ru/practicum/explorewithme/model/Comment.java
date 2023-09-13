@@ -33,4 +33,11 @@ public class Comment {
     @Column(name = "created_at", nullable = false)
     @CreationTimestamp
     private LocalDateTime created;
+
+    @PrePersist
+    public void defaultIsEdited() {
+        if (isEdited == null) {
+            isEdited = false;
+        }
+    }
 }
