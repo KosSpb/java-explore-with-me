@@ -107,18 +107,7 @@ public class CommentService {
                     commentToUpdate.getCreated());
         }
 
-        commentToUpdate.setText(commentRequestDto.getText());
-        if (!commentToUpdate.getIsEdited()) {
-            commentToUpdate.setIsEdited(true);
-        }
-
-        CommentFullInfoResponseDto updatedCommentDto =
-                commentMapper.commentToFullDto(commentRepository.save(commentToUpdate));
-
-        updatedCommentDto.setIsAuthorInitiatorOfEvent(
-                author.getId().equals(commentToUpdate.getEvent().getInitiator().getId()));
-
-        return updatedCommentDto;
+        return updateCommentFieldsAndSaveThenReturnDto(commentRequestDto, commentToUpdate);
     }
 
     public void deleteCommentByUser(long userId, long commentId) {
@@ -144,5 +133,32 @@ public class CommentService {
             throw new NotFoundException("deletion of comment by admin: Comment with id=" + commentId + " was not found");
         });
         commentRepository.deleteById(commentId);
+    }
+
+    public CommentFullInfoResponseDto updateCommentByAdmin(CommentRequestDto commentRequestDto, long commentId) {
+
+        Comment commentToUpdate = commentRepository.findById(commentId).orElseThrow(() -> {
+            throw new NotFoundException("update comment by admin: Comment with id=" + commentId + " was not found");
+        });
+
+        return updateCommentFieldsAndSaveThenReturnDto(commentRequestDto, commentToUpdate);
+    }
+
+    private CommentFullInfoResponseDto updateCommentFieldsAndSaveThenReturnDto(CommentRequestDto commentRequestDto,
+                                                                               Comment commentToUpdate) {
+
+        commentToUpdate.setText(commentRequestDto.getText());
+        if (!commentToUpdate.getIsEdited()) {
+            commentToUpdate.setIsEdited(true);
+        }
+        commentToUpdate.setEditedAt(LocalDateTime.now());
+
+        CommentFullInfoResponseDto updatedCommentDto =
+                commentMapper.commentToFullDto(commentRepository.save(commentToUpdate));
+
+        updatedCommentDto.setIsAuthorInitiatorOfEvent(
+                commentToUpdate.getAuthor().getId().equals(commentToUpdate.getEvent().getInitiator().getId()));
+
+        return updatedCommentDto;
     }
 }

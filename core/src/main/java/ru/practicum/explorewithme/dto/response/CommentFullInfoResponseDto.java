@@ -18,5 +18,6 @@ public class CommentFullInfoResponseDto {
     private UserResponseDto author;
     private Boolean isAuthorInitiatorOfEvent;
     private Boolean isEdited;
+    private LocalDateTime editedAt;
     private LocalDateTime created;
 }

@@ -6,10 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.explorewithme.dto.request.CategoryRequestDto;
-import ru.practicum.explorewithme.dto.request.CompilationRequestDto;
-import ru.practicum.explorewithme.dto.request.EventRequestDto;
-import ru.practicum.explorewithme.dto.request.UserRequestDto;
+import ru.practicum.explorewithme.dto.request.*;
 import ru.practicum.explorewithme.dto.response.*;
 import ru.practicum.explorewithme.service.*;
 import ru.practicum.explorewithme.validation.OnCreate;
@@ -169,6 +166,17 @@ public class AdminController {
         commentService.deleteCommentByAdmin(commentId);
         log.info("deleteCommentByAdmin - request for deletion of comment with id {} by admin was processed.",
                 commentId);
+    }
+
+    @PatchMapping("/comments/{commentId}")
+    public CommentFullInfoResponseDto updateCommentByAdmin(
+            @RequestBody @Valid CommentRequestDto commentRequestDto,
+            @PathVariable(value = "commentId") @Positive long commentId) {
+
+        CommentFullInfoResponseDto updatedComment = commentService.updateCommentByAdmin(commentRequestDto, commentId);
+        log.info("updateCommentByAdmin - request for update of comment with id {} to [\"{}\"] " +
+                "by admin was processed.", commentId, commentRequestDto);
+        return updatedComment;
     }
 
     @GetMapping("/comments")

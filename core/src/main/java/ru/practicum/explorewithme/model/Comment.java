@@ -30,6 +30,8 @@ public class Comment {
     private User author;
     @Column(name = "is_edited")
     private Boolean isEdited;
+    @Column(name = "edited_at")
+    private LocalDateTime editedAt;
     @Column(name = "created_at", nullable = false)
     @CreationTimestamp
     private LocalDateTime created;
