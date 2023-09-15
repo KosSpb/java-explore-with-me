@@ -44,6 +44,7 @@ public class RequestForEventService {
     }
 
     public Collection<RequestForEventResponseDto> getAllRequestsForEventByInitiator(long userId, long eventId) {
+
         User initiator = userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException("get all requests for event of initiator: User with id=" +
                     userId + " was not found");
@@ -124,6 +125,7 @@ public class RequestForEventService {
     }
 
     public Collection<RequestForEventResponseDto> getAllRequestsOfUserForEventsByUserId(long userId) {
+
         User requester = userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException("get all requests of user for events: User with id=" +
                     userId + " was not found");
@@ -138,6 +140,7 @@ public class RequestForEventService {
     }
 
     public RequestForEventResponseDto createRequestForEventByUser(long userId, long eventId) {
+
         User requester = userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException("create request for event: User with id=" + userId + " was not found");
         });
@@ -186,6 +189,7 @@ public class RequestForEventService {
     }
 
     public RequestForEventResponseDto cancelRequestForEventByUser(long userId, long requestId) {
+
         User requester = userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException("cancel request for event: User with id=" + userId + " was not found");
         });

@@ -6,18 +6,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.explorewithme.dto.request.CategoryRequestDto;
-import ru.practicum.explorewithme.dto.request.CompilationRequestDto;
-import ru.practicum.explorewithme.dto.request.EventRequestDto;
-import ru.practicum.explorewithme.dto.request.UserRequestDto;
-import ru.practicum.explorewithme.dto.response.CategoryResponseDto;
-import ru.practicum.explorewithme.dto.response.CompilationResponseDto;
-import ru.practicum.explorewithme.dto.response.EventFullInfoResponseDto;
-import ru.practicum.explorewithme.dto.response.UserResponseDto;
-import ru.practicum.explorewithme.service.CategoryService;
-import ru.practicum.explorewithme.service.CompilationService;
-import ru.practicum.explorewithme.service.EventService;
-import ru.practicum.explorewithme.service.UserService;
+import ru.practicum.explorewithme.dto.request.*;
+import ru.practicum.explorewithme.dto.response.*;
+import ru.practicum.explorewithme.service.*;
 import ru.practicum.explorewithme.validation.OnCreate;
 
 import javax.validation.Valid;
@@ -36,15 +27,20 @@ public class AdminController {
     private final EventService eventService;
     private final UserService userService;
     private final CompilationService compilationService;
+    private final CommentService commentService;
     private final String dateTimePattern = "yyyy-MM-dd HH:mm:ss";
 
     @Autowired
-    public AdminController(CategoryService categoryService, EventService eventService,
-                           UserService userService, CompilationService compilationService) {
+    public AdminController(CategoryService categoryService,
+                           EventService eventService,
+                           UserService userService,
+                           CompilationService compilationService,
+                           CommentService commentService) {
         this.categoryService = categoryService;
         this.eventService = eventService;
         this.userService = userService;
         this.compilationService = compilationService;
+        this.commentService = commentService;
     }
 
     @PostMapping("/categories")
@@ -105,7 +101,7 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public Collection<UserResponseDto> getRequiredUsersByAdmin(
+    public Collection<UserFullInfoResponseDto> getRequiredUsersByAdmin(
             @RequestParam(value = "ids", required = false) List<Long> userIds,
             @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
             @RequestParam(value = "size", defaultValue = "10") @Positive int size) {
@@ -115,9 +111,9 @@ public class AdminController {
 
     @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponseDto createUserByAdmin(@RequestBody @Valid UserRequestDto userRequestDto) {
+    public UserFullInfoResponseDto createUserByAdmin(@RequestBody @Valid UserRequestDto userRequestDto) {
 
-        UserResponseDto createdUser = userService.createUserByAdmin(userRequestDto);
+        UserFullInfoResponseDto createdUser = userService.createUserByAdmin(userRequestDto);
         log.info("createUserByAdmin - request for user [\"{}\"] creation by admin was processed.", userRequestDto);
         return createdUser;
     }
@@ -161,5 +157,42 @@ public class AdminController {
         log.info("updateCompilationByAdmin - request for update of compilation with id {} to [\"{}\"] " +
                 "by admin was processed.", compId, compilationRequestDto);
         return updatedCompilation;
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCommentByAdmin(@PathVariable(value = "commentId") @Positive long commentId) {
+
+        commentService.deleteCommentByAdmin(commentId);
+        log.info("deleteCommentByAdmin - request for deletion of comment with id {} by admin was processed.",
+                commentId);
+    }
+
+    @PatchMapping("/comments/{commentId}")
+    public CommentFullInfoResponseDto updateCommentByAdmin(
+            @RequestBody @Valid CommentRequestDto commentRequestDto,
+            @PathVariable(value = "commentId") @Positive long commentId) {
+
+        CommentFullInfoResponseDto updatedComment = commentService.updateCommentByAdmin(commentRequestDto, commentId);
+        log.info("updateCommentByAdmin - request for update of comment with id {} to [\"{}\"] " +
+                "by admin was processed.", commentId, commentRequestDto);
+        return updatedComment;
+    }
+
+    @GetMapping("/comments")
+    public Collection<CommentFullInfoResponseDto> getFullInfoAboutAllCommentsByAdmin(
+            @RequestParam(value = "text", required = false) String searchText,
+            @RequestParam(value = "authors", required = false) List<Long> userIds,
+            @RequestParam(value = "events", required = false) List<Long> eventIds,
+            @RequestParam(value = "onlyEdited", defaultValue = "false") Boolean onlyEdited,
+            @RequestParam(value = "rangeStart", required = false)
+            @DateTimeFormat(pattern = dateTimePattern) LocalDateTime rangeStart,
+            @RequestParam(value = "rangeEnd", required = false)
+            @DateTimeFormat(pattern = dateTimePattern) LocalDateTime rangeEnd,
+            @RequestParam(value = "from", defaultValue = "0") @PositiveOrZero int from,
+            @RequestParam(value = "size", defaultValue = "10") @Positive int size) {
+
+        return commentService.getFullInfoAboutAllCommentsByAdmin(
+                searchText, userIds, eventIds, onlyEdited, rangeStart, rangeEnd, from, size);
     }
 }

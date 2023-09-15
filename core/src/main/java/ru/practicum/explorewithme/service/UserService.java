@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.explorewithme.dao.UserRepository;
 import ru.practicum.explorewithme.dto.request.UserRequestDto;
-import ru.practicum.explorewithme.dto.response.UserResponseDto;
+import ru.practicum.explorewithme.dto.response.UserFullInfoResponseDto;
 import ru.practicum.explorewithme.exception.NotFoundException;
 import ru.practicum.explorewithme.mapper.UserMapper;
 import ru.practicum.explorewithme.model.User;
@@ -26,7 +26,8 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
-    public Collection<UserResponseDto> getRequiredUsersByAdmin(List<Long> userIds, int from, int size) {
+    public Collection<UserFullInfoResponseDto> getRequiredUsersByAdmin(List<Long> userIds, int from, int size) {
+
         Pageable pageRequest = PageRequest.of(from > 0 ? from / size : 0, size);
         List<User> requiredUsers = userRepository.findRequiredUsers(userIds, pageRequest).getContent();
 
@@ -35,11 +36,13 @@ public class UserService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public UserResponseDto createUserByAdmin(UserRequestDto userRequestDto) {
+    public UserFullInfoResponseDto createUserByAdmin(UserRequestDto userRequestDto) {
+
         return userMapper.userToDto(userRepository.save(userMapper.dtoToUser(userRequestDto)));
     }
 
     public void deleteUserByAdmin(long userId) {
+
         userRepository.findById(userId).orElseThrow(() -> {
             throw new NotFoundException("deletion of user: User with id=" + userId + " was not found");
         });

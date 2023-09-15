@@ -20,10 +20,12 @@ public class LocationService {
     }
 
     public Location createLocation(LocationRequestDto locationRequestDto) {
+
         return locationRepository.save(locationMapper.dtoToLocation(locationRequestDto));
     }
 
     public Location updateLocation(LocationRequestDto locationRequestDto, Long locId) {
+
         Location locationToUpdate = locationRepository.findById(locId).orElseThrow(() -> {
             throw new NotFoundException("update of location: Location with id=" + locId + " was not found");
         });

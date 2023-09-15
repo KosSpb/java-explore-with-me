@@ -1,0 +1,3026 @@
+{
+	"info": {
+		"_postman_id": "7846aeaf-db32-47a1-9044-d70148edc247",
+		"name": "Test Explore With Me - Comments",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "26608260"
+	},
+	"item": [
+		{
+			"name": "User 1 create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(201);\r",
+							"});\r",
+							"pm.test(\"Has user create response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Test user 'id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('id');\r",
+							"    pm.expect(jsonData.id, '\"id\" must be 136').to.eql(136);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"user\",\r\n    \"email\": \"user@user.com\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/admin/users",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Category 1 create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(201);\r",
+							"});\r",
+							"pm.test(\"Has category create response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Test category 'id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('id');\r",
+							"    pm.expect(jsonData.id, '\"id\" must be 121').to.eql(121);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Концерты\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/admin/categories",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Event 1 create from user 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(201);\r",
+							"});\r",
+							"pm.test(\"Has event create response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Test event 'id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('id');\r",
+							"    pm.expect(jsonData.id, '\"id\" must be 106').to.eql(106);\r",
+							"});\r",
+							"pm.test(\"Test event 'annotation' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('annotation');\r",
+							"    pm.expect(jsonData.annotation, '\"annotation\" must be \"Концерт группы Коррозия металла похож на полет.\"').to.eql('Концерт группы Коррозия металла похож на полет.');\r",
+							"});\r",
+							"pm.test(\"Test event 'category.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('category');\r",
+							"    pm.expect(jsonData.category).to.have.property('id');\r",
+							"    pm.expect(jsonData.category.id, '\"category.id\" must be 121').to.eql(121);\r",
+							"});\r",
+							"pm.test(\"Test event 'confirmedRequests' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('confirmedRequests');\r",
+							"    pm.expect(jsonData.confirmedRequests, '\"confirmedRequests\" must be 0').to.eql(0);\r",
+							"});\r",
+							"pm.test(\"Test event 'createdOn' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('createdOn');\r",
+							"    pm.expect(jsonData.createdOn, '\"createdOn\" must be not null').is.not.null;\r",
+							"});\r",
+							"pm.test(\"Test event 'description' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('description');\r",
+							"    pm.expect(jsonData.description, '\"description\" must be \"Концерт группы Коррозия металла похож на полет. Эти ребята дарят чувство обновления, феерические эмоции, яркие впечатления.\"').to.eql('Концерт группы Коррозия металла похож на полет. Эти ребята дарят чувство обновления, феерические эмоции, яркие впечатления.');\r",
+							"});\r",
+							"pm.test(\"Test event 'eventDate' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('eventDate');\r",
+							"    pm.expect(jsonData.eventDate, '\"eventDate\" must be \"2023-12-21 11:10:05\"').to.eql('2023-12-21 11:10:05');\r",
+							"});\r",
+							"pm.test(\"Test event 'initiator.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('initiator');\r",
+							"    pm.expect(jsonData.initiator).to.have.property('id');\r",
+							"    pm.expect(jsonData.initiator.id, '\"initiator.id\" must be 136').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test event 'location.lat' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('location');\r",
+							"    pm.expect(jsonData.location).to.have.property('lat');\r",
+							"    pm.expect(jsonData.location.lat, '\"location.lat\" must be 79.37751').to.eql(79.37751);\r",
+							"});\r",
+							"pm.test(\"Test event 'location.lon' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('location');\r",
+							"    pm.expect(jsonData.location).to.have.property('lon');\r",
+							"    pm.expect(jsonData.location.lon, '\"location.lon\" must be 97.57919').to.eql(97.57919);\r",
+							"});\r",
+							"pm.test(\"Test event 'paid' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('paid');\r",
+							"    pm.expect(jsonData.paid, '\"paid\" must be true').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test event 'participantLimit' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('participantLimit');\r",
+							"    pm.expect(jsonData.participantLimit, '\"participantLimit\" must be 0').to.eql(0);\r",
+							"});\r",
+							"pm.test(\"Test event 'publishedOn' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('publishedOn');\r",
+							"    pm.expect(jsonData.publishedOn, '\"publishedOn\" must be null').is.null;\r",
+							"});\r",
+							"pm.test(\"Test event 'requestModeration' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('requestModeration');\r",
+							"    pm.expect(jsonData.requestModeration, '\"requestModeration\" must be false').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test event 'state' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('state');\r",
+							"    pm.expect(jsonData.state, '\"state\" must be \"PENDING\"').to.eql('PENDING');\r",
+							"});\r",
+							"pm.test(\"Test event 'title' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('title');\r",
+							"    pm.expect(jsonData.title, '\"title\" must be \"Концерт группы Коррозия металла\"').to.eql('Концерт группы Коррозия металла');\r",
+							"});\r",
+							"pm.test(\"Test event 'views' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('views');\r",
+							"    pm.expect(jsonData.views, '\"views\" must be 0').to.eql(0);\r",
+							"});\r",
+							"pm.test(\"Test event 'comments' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('comments');\r",
+							"    pm.expect(jsonData.comments.length, 'length of \"comments\" must be \"0\"').to.eql(0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"annotation\": \"Концерт группы Коррозия металла похож на полет.\",\r\n  \"category\": 121,\r\n  \"description\": \"Концерт группы Коррозия металла похож на полет. Эти ребята дарят чувство обновления, феерические эмоции, яркие впечатления.\",\r\n  \"eventDate\": \"2023-12-21 11:10:05\",\r\n  \"location\": {\r\n    \"lat\": 79.37751,\r\n    \"lon\": 97.57919\r\n  },\r\n  \"paid\": true,\r\n  \"participantLimit\": 0,\r\n  \"requestModeration\": false,\r\n  \"title\": \"Концерт группы Коррозия металла\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/136/events",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"136",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 1 create with not found user failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"Add comment from initiator of event\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/99999/comments?eventId=106",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"99999",
+						"comments"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "106"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 1 create with not found event failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"Add comment from initiator of event\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/136/comments?eventId=99999",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"136",
+						"comments"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "99999"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 1 create with blank text field failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"    \"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/136/comments?eventId=106",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"136",
+						"comments"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "106"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 1 create with null text field failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": null\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/136/comments?eventId=106",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"136",
+						"comments"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "106"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 1 create with text field size < 3 failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"th\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/136/comments?eventId=106",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"136",
+						"comments"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "106"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 1 create with text field size > 7000 failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"СемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысячСимволовЭтоОченьМногоСемьТысяч!!\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/136/comments?eventId=106",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"136",
+						"comments"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "106"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 1 create from user 1 to unpublished event 1 failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 409\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(409);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"Быстрее покупаем билеты на концерт, пока не закончились.\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/136/comments?eventId=106",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"136",
+						"comments"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "106"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Event 1 update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"pm.test(\"Has event create response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Test event 'id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('id');\r",
+							"    pm.expect(jsonData.id, '\"id\" must be 106').to.eql(106);\r",
+							"});\r",
+							"pm.test(\"Test event 'annotation' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('annotation');\r",
+							"    pm.expect(jsonData.annotation, '\"annotation\" must be \"Концерт группы Леприконсы похож на полет.\"').to.eql('Концерт группы Леприконсы похож на полет.');\r",
+							"});\r",
+							"pm.test(\"Test event 'category.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('category');\r",
+							"    pm.expect(jsonData.category).to.have.property('id');\r",
+							"    pm.expect(jsonData.category.id, '\"category.id\" must be 121').to.eql(121);\r",
+							"});\r",
+							"pm.test(\"Test event 'confirmedRequests' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('confirmedRequests');\r",
+							"    pm.expect(jsonData.confirmedRequests, '\"confirmedRequests\" must be 0').to.eql(0);\r",
+							"});\r",
+							"pm.test(\"Test event 'createdOn' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('createdOn');\r",
+							"    pm.expect(jsonData.createdOn, '\"createdOn\" must be not null').is.not.null;\r",
+							"});\r",
+							"pm.test(\"Test event 'description' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('description');\r",
+							"    pm.expect(jsonData.description, '\"description\" must be \"Концерт группы Леприконсы похож на полет. Эти ребята дарят чувство обновления, феерические эмоции, яркие впечатления.\"').to.eql('Концерт группы Леприконсы похож на полет. Эти ребята дарят чувство обновления, феерические эмоции, яркие впечатления.');\r",
+							"});\r",
+							"pm.test(\"Test event 'eventDate' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('eventDate');\r",
+							"    pm.expect(jsonData.eventDate, '\"eventDate\" must be \"2023-12-21 11:10:05\"').to.eql('2023-12-21 11:10:05');\r",
+							"});\r",
+							"pm.test(\"Test event 'initiator.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('initiator');\r",
+							"    pm.expect(jsonData.initiator).to.have.property('id');\r",
+							"    pm.expect(jsonData.initiator.id, '\"initiator.id\" must be 136').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test event 'location.lat' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('location');\r",
+							"    pm.expect(jsonData.location).to.have.property('lat');\r",
+							"    pm.expect(jsonData.location.lat, '\"location.lat\" must be 79.37751').to.eql(79.37751);\r",
+							"});\r",
+							"pm.test(\"Test event 'location.lon' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('location');\r",
+							"    pm.expect(jsonData.location).to.have.property('lon');\r",
+							"    pm.expect(jsonData.location.lon, '\"location.lon\" must be 97.57919').to.eql(97.57919);\r",
+							"});\r",
+							"pm.test(\"Test event 'paid' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('paid');\r",
+							"    pm.expect(jsonData.paid, '\"paid\" must be true').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test event 'participantLimit' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('participantLimit');\r",
+							"    pm.expect(jsonData.participantLimit, '\"participantLimit\" must be 0').to.eql(0);\r",
+							"});\r",
+							"pm.test(\"Test event 'publishedOn' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('publishedOn');\r",
+							"    pm.expect(jsonData.publishedOn, '\"publishedOn\" must be null').is.null;\r",
+							"});\r",
+							"pm.test(\"Test event 'requestModeration' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('requestModeration');\r",
+							"    pm.expect(jsonData.requestModeration, '\"requestModeration\" must be false').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test event 'state' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('state');\r",
+							"    pm.expect(jsonData.state, '\"state\" must be \"PENDING\"').to.eql('PENDING');\r",
+							"});\r",
+							"pm.test(\"Test event 'title' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('title');\r",
+							"    pm.expect(jsonData.title, '\"title\" must be \"Концерт группы Леприконсы\"').to.eql('Концерт группы Леприконсы');\r",
+							"});\r",
+							"pm.test(\"Test event 'views' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('views');\r",
+							"    pm.expect(jsonData.views, '\"views\" must be 0').to.eql(0);\r",
+							"});\r",
+							"pm.test(\"Test event 'comments' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('comments');\r",
+							"    pm.expect(jsonData.comments.length, 'length of \"comments\" must be \"0\"').to.eql(0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"annotation\": \"Концерт группы Леприконсы похож на полет.\",\r\n  \"category\": 121,\r\n  \"description\": \"Концерт группы Леприконсы похож на полет. Эти ребята дарят чувство обновления, феерические эмоции, яркие впечатления.\",\r\n  \"eventDate\": \"2023-12-21 11:10:05\",\r\n  \"location\": {\r\n    \"lat\": 79.37751,\r\n    \"lon\": 97.57919\r\n  },\r\n  \"paid\": true,\r\n  \"participantLimit\": 0,\r\n  \"requestModeration\": false,\r\n  \"title\": \"Концерт группы Леприконсы\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/136/events/106",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"136",
+						"events",
+						"106"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Event 1 publication",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"pm.test(\"Has event create response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Test event 'id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('id');\r",
+							"    pm.expect(jsonData.id, '\"id\" must be 106').to.eql(106);\r",
+							"});\r",
+							"pm.test(\"Test event 'annotation' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('annotation');\r",
+							"    pm.expect(jsonData.annotation, '\"annotation\" must be \"Концерт группы Леприконсы похож на полет.\"').to.eql('Концерт группы Леприконсы похож на полет.');\r",
+							"});\r",
+							"pm.test(\"Test event 'category.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('category');\r",
+							"    pm.expect(jsonData.category).to.have.property('id');\r",
+							"    pm.expect(jsonData.category.id, '\"category.id\" must be 121').to.eql(121);\r",
+							"});\r",
+							"pm.test(\"Test event 'confirmedRequests' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('confirmedRequests');\r",
+							"    pm.expect(jsonData.confirmedRequests, '\"confirmedRequests\" must be 0').to.eql(0);\r",
+							"});\r",
+							"pm.test(\"Test event 'createdOn' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('createdOn');\r",
+							"    pm.expect(jsonData.createdOn, '\"createdOn\" must be not null').is.not.null;\r",
+							"});\r",
+							"pm.test(\"Test event 'description' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('description');\r",
+							"    pm.expect(jsonData.description, '\"description\" must be \"Концерт группы Леприконсы похож на полет. Эти ребята дарят чувство обновления, феерические эмоции, яркие впечатления.\"').to.eql('Концерт группы Леприконсы похож на полет. Эти ребята дарят чувство обновления, феерические эмоции, яркие впечатления.');\r",
+							"});\r",
+							"pm.test(\"Test event 'eventDate' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('eventDate');\r",
+							"    pm.expect(jsonData.eventDate, '\"eventDate\" must be \"2023-12-21 11:10:05\"').to.eql('2023-12-21 11:10:05');\r",
+							"});\r",
+							"pm.test(\"Test event 'initiator.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('initiator');\r",
+							"    pm.expect(jsonData.initiator).to.have.property('id');\r",
+							"    pm.expect(jsonData.initiator.id, '\"initiator.id\" must be 136').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test event 'location.lat' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('location');\r",
+							"    pm.expect(jsonData.location).to.have.property('lat');\r",
+							"    pm.expect(jsonData.location.lat, '\"location.lat\" must be 79.37751').to.eql(79.37751);\r",
+							"});\r",
+							"pm.test(\"Test event 'location.lon' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('location');\r",
+							"    pm.expect(jsonData.location).to.have.property('lon');\r",
+							"    pm.expect(jsonData.location.lon, '\"location.lon\" must be 97.57919').to.eql(97.57919);\r",
+							"});\r",
+							"pm.test(\"Test event 'paid' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('paid');\r",
+							"    pm.expect(jsonData.paid, '\"paid\" must be true').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test event 'participantLimit' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('participantLimit');\r",
+							"    pm.expect(jsonData.participantLimit, '\"participantLimit\" must be 0').to.eql(0);\r",
+							"});\r",
+							"pm.test(\"Test event 'publishedOn' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('publishedOn');\r",
+							"    pm.expect(jsonData.publishedOn, '\"publishedOn\" must be not null').is.not.null;\r",
+							"});\r",
+							"pm.test(\"Test event 'requestModeration' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('requestModeration');\r",
+							"    pm.expect(jsonData.requestModeration, '\"requestModeration\" must be false').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test event 'state' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('state');\r",
+							"    pm.expect(jsonData.state, '\"state\" must be \"PUBLISHED\"').to.eql('PUBLISHED');\r",
+							"});\r",
+							"pm.test(\"Test event 'title' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('title');\r",
+							"    pm.expect(jsonData.title, '\"title\" must be \"Концерт группы Леприконсы\"').to.eql('Концерт группы Леприконсы');\r",
+							"});\r",
+							"pm.test(\"Test event 'views' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('views');\r",
+							"    pm.expect(jsonData.views, '\"views\" must be 0').to.eql(0);\r",
+							"});\r",
+							"pm.test(\"Test event 'comments' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('comments');\r",
+							"    pm.expect(jsonData.comments.length, 'length of \"comments\" must be \"0\"').to.eql(0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"stateAction\": \"PUBLISH_EVENT\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/admin/events/106",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"events",
+						"106"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comments get all by admin before adding comments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.be.ok;\r",
+							"});\r",
+							"pm.test(\"Test list event response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length, 'List length must be 0').to.eql(0);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/admin/comments",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 1 create from user 1 to published event 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(201);\r",
+							"});\r",
+							"pm.test(\"Has comment create response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Test comment 'id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('id');\r",
+							"    pm.expect(jsonData.id, '\"id\" must be 1').to.eql(1);\r",
+							"});\r",
+							"pm.test(\"Test comment 'text' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('text');\r",
+							"    pm.expect(jsonData.text, '\"text\" must be \"Быстрее покупаем билеты на концерт, пока не закончились.\"').to.eql('Быстрее покупаем билеты на концерт, пока не закончились.');\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('id');\r",
+							"    pm.expect(jsonData.event.id, '\"event.id\" must be \"106\"').to.eql(106);\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.annotation' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('annotation');\r",
+							"    pm.expect(jsonData.event.annotation, '\"annotation\" must be \"Концерт группы Леприконсы похож на полет.\"').to.eql('Концерт группы Леприконсы похож на полет.');\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.category.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('category');\r",
+							"    pm.expect(jsonData.event.category).to.have.property('id');\r",
+							"    pm.expect(jsonData.event.category.id, '\"event.category.id\" must be 121').to.eql(121);\r",
+							"});\r",
+							"pm.test(\"Test comment 'eventDate' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('eventDate');\r",
+							"    pm.expect(jsonData.event.eventDate, '\"event.eventDate\" must be \"2023-12-21 11:10:05\"').to.eql('2023-12-21 11:10:05');\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.initiator.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('initiator');\r",
+							"    pm.expect(jsonData.event.initiator).to.have.property('id');\r",
+							"    pm.expect(jsonData.event.initiator.id, '\"event.initiator.id\" must be 136').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.paid' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('paid');\r",
+							"    pm.expect(jsonData.event.paid, '\"event.paid\" must be true').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.title' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('title');\r",
+							"    pm.expect(jsonData.event.title, '\"event.title\" must be \"Концерт группы Леприконсы\"').to.eql('Концерт группы Леприконсы');\r",
+							"});\r",
+							"pm.test(\"Test comment 'author.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('author');\r",
+							"    pm.expect(jsonData.author).to.have.property('id');\r",
+							"    pm.expect(jsonData.author.id, '\"author.id\" must be \"136\"').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test comment 'isAuthorInitiatorOfEvent' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('isAuthorInitiatorOfEvent');\r",
+							"    pm.expect(jsonData.isAuthorInitiatorOfEvent, '\"isAuthorInitiatorOfEvent\" must be \"true\"').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment 'isEdited' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('isEdited');\r",
+							"    pm.expect(jsonData.isEdited, '\"isEdited\" must be \"false\"').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test comment 'editedAt' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('editedAt');\r",
+							"    pm.expect(jsonData.editedAt, '\"editedAt\" must be null').is.null;\r",
+							"});\r",
+							"pm.test(\"Test comment 'created' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('created');\r",
+							"    pm.expect(jsonData.created, '\"created\" must be not null').is.not.null;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"Быстрее покупаем билеты на концерт, пока не закончились.\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/136/comments?eventId=106",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"136",
+						"comments"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "106"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Event 1 get by id published with Comment 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.be.ok;\r",
+							"});\r",
+							"pm.test(\"Test event 'id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('id');\r",
+							"    pm.expect(jsonData.id, '\"id\" must be 106').to.eql(106);\r",
+							"});\r",
+							"pm.test(\"Test event 'annotation' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('annotation');\r",
+							"    pm.expect(jsonData.annotation, '\"annotation\" must be \"Концерт группы Леприконсы похож на полет.\"').to.eql('Концерт группы Леприконсы похож на полет.');\r",
+							"});\r",
+							"pm.test(\"Test event 'category.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('category');\r",
+							"    pm.expect(jsonData.category).to.have.property('id');\r",
+							"    pm.expect(jsonData.category.id, '\"category.id\" must be 121').to.eql(121);\r",
+							"});\r",
+							"pm.test(\"Test event 'confirmedRequests' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('confirmedRequests');\r",
+							"    pm.expect(jsonData.confirmedRequests, '\"confirmedRequests\" must be 0').to.eql(0);\r",
+							"});\r",
+							"pm.test(\"Test event 'createdOn' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('createdOn');\r",
+							"    pm.expect(jsonData.createdOn, '\"createdOn\" must be not null').is.not.null;\r",
+							"});\r",
+							"pm.test(\"Test event 'description' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('description');\r",
+							"    pm.expect(jsonData.description, '\"description\" must be \"Концерт группы Леприконсы похож на полет. Эти ребята дарят чувство обновления, феерические эмоции, яркие впечатления.\"').to.eql('Концерт группы Леприконсы похож на полет. Эти ребята дарят чувство обновления, феерические эмоции, яркие впечатления.');\r",
+							"});\r",
+							"pm.test(\"Test event 'eventDate' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('eventDate');\r",
+							"    pm.expect(jsonData.eventDate, '\"eventDate\" must be \"2023-12-21 11:10:05\"').to.eql('2023-12-21 11:10:05');\r",
+							"});\r",
+							"pm.test(\"Test event 'initiator.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('initiator');\r",
+							"    pm.expect(jsonData.initiator).to.have.property('id');\r",
+							"    pm.expect(jsonData.initiator.id, '\"initiator.id\" must be 136').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test event 'location.lat' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('location');\r",
+							"    pm.expect(jsonData.location).to.have.property('lat');\r",
+							"    pm.expect(jsonData.location.lat, '\"location.lat\" must be 79.37751').to.eql(79.37751);\r",
+							"});\r",
+							"pm.test(\"Test event 'location.lon' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('location');\r",
+							"    pm.expect(jsonData.location).to.have.property('lon');\r",
+							"    pm.expect(jsonData.location.lon, '\"location.lon\" must be 97.57919').to.eql(97.57919);\r",
+							"});\r",
+							"pm.test(\"Test event 'paid' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('paid');\r",
+							"    pm.expect(jsonData.paid, '\"paid\" must be true').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test event 'participantLimit' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('participantLimit');\r",
+							"    pm.expect(jsonData.participantLimit, '\"participantLimit\" must be 0').to.eql(0);\r",
+							"});\r",
+							"pm.test(\"Test event 'publishedOn' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('publishedOn');\r",
+							"    pm.expect(jsonData.publishedOn, '\"publishedOn\" must be not null').is.not.null;\r",
+							"});\r",
+							"pm.test(\"Test event 'requestModeration' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('requestModeration');\r",
+							"    pm.expect(jsonData.requestModeration, '\"requestModeration\" must be false').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test event 'state' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('state');\r",
+							"    pm.expect(jsonData.state, '\"state\" must be \"PUBLISHED\"').to.eql('PUBLISHED');\r",
+							"});\r",
+							"pm.test(\"Test event 'title' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('title');\r",
+							"    pm.expect(jsonData.title, '\"title\" must be \"Концерт группы Леприконсы\"').to.eql('Концерт группы Леприконсы');\r",
+							"});\r",
+							"pm.test(\"Test event 'views' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('views');\r",
+							"    pm.expect(jsonData.views, '\"views\" must be 0').to.eql(0);\r",
+							"});\r",
+							"pm.test(\"Test event 'comments' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('comments');\r",
+							"    pm.expect(jsonData.comments.length, 'length of \"comments\" must be \"1\"').to.eql(1);\r",
+							"});\r",
+							"pm.test(\"Test event 'comments[0].id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('comments');\r",
+							"    pm.expect(jsonData.comments[0]).to.have.property('id');\r",
+							"    pm.expect(jsonData.comments[0].id, 'comments[0].id\" must be 1').to.eql(1);\r",
+							"});\r",
+							"pm.test(\"Test event 'comments[0].text' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('comments');\r",
+							"    pm.expect(jsonData.comments[0]).to.have.property('text');\r",
+							"    pm.expect(jsonData.comments[0].text, 'comments[0].text\" must be \"Быстрее покупаем билеты на концерт, пока не закончились.\"').to.eql('Быстрее покупаем билеты на концерт, пока не закончились.');\r",
+							"});\r",
+							"pm.test(\"Test event 'comments[0].isAuthorInitiatorOfEvent' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('comments');\r",
+							"    pm.expect(jsonData.comments[0]).to.have.property('isAuthorInitiatorOfEvent');\r",
+							"    pm.expect(jsonData.comments[0].isAuthorInitiatorOfEvent, 'comments[0].isAuthorInitiatorOfEvent\" must be \"true\"').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test event 'comments[0].isEdited' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('comments');\r",
+							"    pm.expect(jsonData.comments[0]).to.have.property('isEdited');\r",
+							"    pm.expect(jsonData.comments[0].isEdited, 'comments[0].isEdited\" must be \"false\"').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test event 'comments[0].created' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('comments');\r",
+							"    pm.expect(jsonData.comments[0]).to.have.property('created');\r",
+							"    pm.expect(jsonData.comments[0].created, 'comments[0].created\" must be not null').is.not.null;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/events/106",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"events",
+						"106"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User 2 create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(201);\r",
+							"});\r",
+							"pm.test(\"Has user create response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Test user 'id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('id');\r",
+							"    pm.expect(jsonData.id, '\"id\" must be 137').to.eql(137);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"gladius\",\r\n    \"email\": \"gladius@list.com\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/admin/users",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 2 create from user 2 to published event 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(201);\r",
+							"});\r",
+							"pm.test(\"Has comment create response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Test comment 'id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('id');\r",
+							"    pm.expect(jsonData.id, '\"id\" must be 2').to.eql(2);\r",
+							"});\r",
+							"pm.test(\"Test comment 'text' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('text');\r",
+							"    pm.expect(jsonData.text, '\"text\" must be \"Можно ли взять с собой на концерт Кота?\"').to.eql('Можно ли взять с собой на концерт Кота?');\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('id');\r",
+							"    pm.expect(jsonData.event.id, '\"event.id\" must be \"106\"').to.eql(106);\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.annotation' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('annotation');\r",
+							"    pm.expect(jsonData.event.annotation, '\"annotation\" must be \"Концерт группы Леприконсы похож на полет.\"').to.eql('Концерт группы Леприконсы похож на полет.');\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.category.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('category');\r",
+							"    pm.expect(jsonData.event.category).to.have.property('id');\r",
+							"    pm.expect(jsonData.event.category.id, '\"event.category.id\" must be 121').to.eql(121);\r",
+							"});\r",
+							"pm.test(\"Test comment 'eventDate' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('eventDate');\r",
+							"    pm.expect(jsonData.event.eventDate, '\"event.eventDate\" must be \"2023-12-21 11:10:05\"').to.eql('2023-12-21 11:10:05');\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.initiator.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('initiator');\r",
+							"    pm.expect(jsonData.event.initiator).to.have.property('id');\r",
+							"    pm.expect(jsonData.event.initiator.id, '\"event.initiator.id\" must be 136').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.paid' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('paid');\r",
+							"    pm.expect(jsonData.event.paid, '\"event.paid\" must be true').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.title' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('title');\r",
+							"    pm.expect(jsonData.event.title, '\"event.title\" must be \"Концерт группы Леприконсы\"').to.eql('Концерт группы Леприконсы');\r",
+							"});\r",
+							"pm.test(\"Test comment 'author.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('author');\r",
+							"    pm.expect(jsonData.author).to.have.property('id');\r",
+							"    pm.expect(jsonData.author.id, '\"author.id\" must be \"137\"').to.eql(137);\r",
+							"});\r",
+							"pm.test(\"Test comment 'isAuthorInitiatorOfEvent' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('isAuthorInitiatorOfEvent');\r",
+							"    pm.expect(jsonData.isAuthorInitiatorOfEvent, '\"isAuthorInitiatorOfEvent\" must be \"false\"').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test comment 'isEdited' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('isEdited');\r",
+							"    pm.expect(jsonData.isEdited, '\"isEdited\" must be \"false\"').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test comment 'editedAt' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('editedAt');\r",
+							"    pm.expect(jsonData.editedAt, '\"editedAt\" must be null').is.null;\r",
+							"});\r",
+							"pm.test(\"Test comment 'created' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('created');\r",
+							"    pm.expect(jsonData.created, '\"created\" must be not null').is.not.null;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"Можно ли взять с собой на концерт Кота?\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/137/comments?eventId=106",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"137",
+						"comments"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "106"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 3 create from user 2 to published event 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(201);\r",
+							"});\r",
+							"pm.test(\"Has comment create response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Test comment 'id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('id');\r",
+							"    pm.expect(jsonData.id, '\"id\" must be 3').to.eql(3);\r",
+							"});\r",
+							"pm.test(\"Test comment 'text' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('text');\r",
+							"    pm.expect(jsonData.text, '\"text\" must be \"Так можно взять Кота или нет?\"').to.eql('Так можно взять Кота или нет?');\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('id');\r",
+							"    pm.expect(jsonData.event.id, '\"event.id\" must be \"106\"').to.eql(106);\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.annotation' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('annotation');\r",
+							"    pm.expect(jsonData.event.annotation, '\"annotation\" must be \"Концерт группы Леприконсы похож на полет.\"').to.eql('Концерт группы Леприконсы похож на полет.');\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.category.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('category');\r",
+							"    pm.expect(jsonData.event.category).to.have.property('id');\r",
+							"    pm.expect(jsonData.event.category.id, '\"event.category.id\" must be 121').to.eql(121);\r",
+							"});\r",
+							"pm.test(\"Test comment 'eventDate' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('eventDate');\r",
+							"    pm.expect(jsonData.event.eventDate, '\"event.eventDate\" must be \"2023-12-21 11:10:05\"').to.eql('2023-12-21 11:10:05');\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.initiator.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('initiator');\r",
+							"    pm.expect(jsonData.event.initiator).to.have.property('id');\r",
+							"    pm.expect(jsonData.event.initiator.id, '\"event.initiator.id\" must be 136').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.paid' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('paid');\r",
+							"    pm.expect(jsonData.event.paid, '\"event.paid\" must be true').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.title' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('title');\r",
+							"    pm.expect(jsonData.event.title, '\"event.title\" must be \"Концерт группы Леприконсы\"').to.eql('Концерт группы Леприконсы');\r",
+							"});\r",
+							"pm.test(\"Test comment 'author.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('author');\r",
+							"    pm.expect(jsonData.author).to.have.property('id');\r",
+							"    pm.expect(jsonData.author.id, '\"author.id\" must be \"137\"').to.eql(137);\r",
+							"});\r",
+							"pm.test(\"Test comment 'isAuthorInitiatorOfEvent' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('isAuthorInitiatorOfEvent');\r",
+							"    pm.expect(jsonData.isAuthorInitiatorOfEvent, '\"isAuthorInitiatorOfEvent\" must be \"false\"').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test comment 'isEdited' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('isEdited');\r",
+							"    pm.expect(jsonData.isEdited, '\"isEdited\" must be \"false\"').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test comment 'editedAt' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('editedAt');\r",
+							"    pm.expect(jsonData.editedAt, '\"editedAt\" must be null').is.null;\r",
+							"});\r",
+							"pm.test(\"Test comment 'created' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('created');\r",
+							"    pm.expect(jsonData.created, '\"created\" must be not null').is.not.null;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"Так можно взять Кота или нет?\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/137/comments?eventId=106",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"137",
+						"comments"
+					],
+					"query": [
+						{
+							"key": "eventId",
+							"value": "106"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comments get all by admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.be.ok;\r",
+							"});\r",
+							"pm.test(\"Test list event response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length, 'List length must be 3').to.eql(3);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].id, '\"[0].id\" must be 1').to.eql(1);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].text' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('text');\r",
+							"    pm.expect(jsonData[0].text, '\"[0].text\" must be \"Быстрее покупаем билеты на концерт, пока не закончились.\"').to.eql('Быстрее покупаем билеты на концерт, пока не закончились.');\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].event.id, '\"[0].event.id\" must be \"106\"').to.eql(106);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.annotation' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('annotation');\r",
+							"    pm.expect(jsonData[0].event.annotation, '\"[0].annotation\" must be \"Концерт группы Леприконсы похож на полет.\"').to.eql('Концерт группы Леприконсы похож на полет.');\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.category.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('category');\r",
+							"    pm.expect(jsonData[0].event.category).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].event.category.id, '\"[0].event.category.id\" must be 121').to.eql(121);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].eventDate' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('eventDate');\r",
+							"    pm.expect(jsonData[0].event.eventDate, '\"[0].event.eventDate\" must be \"2023-12-21 11:10:05\"').to.eql('2023-12-21 11:10:05');\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.initiator.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('initiator');\r",
+							"    pm.expect(jsonData[0].event.initiator).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].event.initiator.id, '\"[0].event.initiator.id\" must be 136').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.paid' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('paid');\r",
+							"    pm.expect(jsonData[0].event.paid, '\"[0].event.paid\" must be true').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.title' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('title');\r",
+							"    pm.expect(jsonData[0].event.title, '\"[0].event.title\" must be \"Концерт группы Леприконсы\"').to.eql('Концерт группы Леприконсы');\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].author.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('author');\r",
+							"    pm.expect(jsonData[0].author).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].author.id, '\"[0].author.id\" must be \"136\"').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].isAuthorInitiatorOfEvent' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('isAuthorInitiatorOfEvent');\r",
+							"    pm.expect(jsonData[0].isAuthorInitiatorOfEvent, '\"[0].isAuthorInitiatorOfEvent\" must be \"true\"').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].isEdited' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('isEdited');\r",
+							"    pm.expect(jsonData[0].isEdited, '\"[0].isEdited\" must be \"false\"').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].editedAt' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('editedAt');\r",
+							"    pm.expect(jsonData[0].editedAt, '\"[0].editedAt\" must be null').is.null;\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].created' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('created');\r",
+							"    pm.expect(jsonData[0].created, '\"[0].created\" must be not null').is.not.null;\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('id');\r",
+							"    pm.expect(jsonData[1].id, '\"[1].id\" must be 2').to.eql(2);\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].text' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('text');\r",
+							"    pm.expect(jsonData[1].text, '\"[1].text\" must be \"Можно ли взять с собой на концерт Кота?\"').to.eql('Можно ли взять с собой на концерт Кота?');\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].event.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('event');\r",
+							"    pm.expect(jsonData[1].event).to.have.property('id');\r",
+							"    pm.expect(jsonData[1].event.id, '\"[1].event.id\" must be \"106\"').to.eql(106);\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].event.annotation' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('event');\r",
+							"    pm.expect(jsonData[1].event).to.have.property('annotation');\r",
+							"    pm.expect(jsonData[1].event.annotation, '\"[1].annotation\" must be \"Концерт группы Леприконсы похож на полет.\"').to.eql('Концерт группы Леприконсы похож на полет.');\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].event.category.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('event');\r",
+							"    pm.expect(jsonData[1].event).to.have.property('category');\r",
+							"    pm.expect(jsonData[1].event.category).to.have.property('id');\r",
+							"    pm.expect(jsonData[1].event.category.id, '\"[1].event.category.id\" must be 121').to.eql(121);\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].eventDate' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('event');\r",
+							"    pm.expect(jsonData[1].event).to.have.property('eventDate');\r",
+							"    pm.expect(jsonData[1].event.eventDate, '\"[1].event.eventDate\" must be \"2023-12-21 11:10:05\"').to.eql('2023-12-21 11:10:05');\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].event.initiator.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('event');\r",
+							"    pm.expect(jsonData[1].event).to.have.property('initiator');\r",
+							"    pm.expect(jsonData[1].event.initiator).to.have.property('id');\r",
+							"    pm.expect(jsonData[1].event.initiator.id, '\"[1].event.initiator.id\" must be 136').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].event.paid' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('event');\r",
+							"    pm.expect(jsonData[1].event).to.have.property('paid');\r",
+							"    pm.expect(jsonData[1].event.paid, '\"[1].event.paid\" must be true').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].event.title' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('event');\r",
+							"    pm.expect(jsonData[1].event).to.have.property('title');\r",
+							"    pm.expect(jsonData[1].event.title, '\"[1].event.title\" must be \"Концерт группы Леприконсы\"').to.eql('Концерт группы Леприконсы');\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].author.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('author');\r",
+							"    pm.expect(jsonData[1].author).to.have.property('id');\r",
+							"    pm.expect(jsonData[1].author.id, '\"[1].author.id\" must be \"137\"').to.eql(137);\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].isAuthorInitiatorOfEvent' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('isAuthorInitiatorOfEvent');\r",
+							"    pm.expect(jsonData[1].isAuthorInitiatorOfEvent, '\"[1].isAuthorInitiatorOfEvent\" must be \"false\"').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].isEdited' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('isEdited');\r",
+							"    pm.expect(jsonData[1].isEdited, '\"[1].isEdited\" must be \"false\"').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].editedAt' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('editedAt');\r",
+							"    pm.expect(jsonData[1].editedAt, '\"[1].editedAt\" must be null').is.null;\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].created' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('created');\r",
+							"    pm.expect(jsonData[1].created, '\"[1].created\" must be not null').is.not.null;\r",
+							"});\r",
+							"pm.test(\"Test comment '[2].id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[2]).to.have.property('id');\r",
+							"    pm.expect(jsonData[2].id, '\"[2].id\" must be 3').to.eql(3);\r",
+							"});\r",
+							"pm.test(\"Test comment '[2].text' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[2]).to.have.property('text');\r",
+							"    pm.expect(jsonData[2].text, '\"[2].text\" must be \"Так можно взять Кота или нет?\"').to.eql('Так можно взять Кота или нет?');\r",
+							"});\r",
+							"pm.test(\"Test comment '[2].event.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[2]).to.have.property('event');\r",
+							"    pm.expect(jsonData[2].event).to.have.property('id');\r",
+							"    pm.expect(jsonData[2].event.id, '\"[2].event.id\" must be \"106\"').to.eql(106);\r",
+							"});\r",
+							"pm.test(\"Test comment '[2].event.annotation' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[2]).to.have.property('event');\r",
+							"    pm.expect(jsonData[2].event).to.have.property('annotation');\r",
+							"    pm.expect(jsonData[2].event.annotation, '\"[2].annotation\" must be \"Концерт группы Леприконсы похож на полет.\"').to.eql('Концерт группы Леприконсы похож на полет.');\r",
+							"});\r",
+							"pm.test(\"Test comment '[2].event.category.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[2]).to.have.property('event');\r",
+							"    pm.expect(jsonData[2].event).to.have.property('category');\r",
+							"    pm.expect(jsonData[2].event.category).to.have.property('id');\r",
+							"    pm.expect(jsonData[2].event.category.id, '\"[2].event.category.id\" must be 121').to.eql(121);\r",
+							"});\r",
+							"pm.test(\"Test comment '[2].eventDate' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[2]).to.have.property('event');\r",
+							"    pm.expect(jsonData[2].event).to.have.property('eventDate');\r",
+							"    pm.expect(jsonData[2].event.eventDate, '\"[2].event.eventDate\" must be \"2023-12-21 11:10:05\"').to.eql('2023-12-21 11:10:05');\r",
+							"});\r",
+							"pm.test(\"Test comment '[2].event.initiator.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[2]).to.have.property('event');\r",
+							"    pm.expect(jsonData[2].event).to.have.property('initiator');\r",
+							"    pm.expect(jsonData[2].event.initiator).to.have.property('id');\r",
+							"    pm.expect(jsonData[2].event.initiator.id, '\"[2].event.initiator.id\" must be 136').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test comment '[2].event.paid' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[2]).to.have.property('event');\r",
+							"    pm.expect(jsonData[2].event).to.have.property('paid');\r",
+							"    pm.expect(jsonData[2].event.paid, '\"[2].event.paid\" must be true').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment '[2].event.title' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[2]).to.have.property('event');\r",
+							"    pm.expect(jsonData[2].event).to.have.property('title');\r",
+							"    pm.expect(jsonData[2].event.title, '\"[2].event.title\" must be \"Концерт группы Леприконсы\"').to.eql('Концерт группы Леприконсы');\r",
+							"});\r",
+							"pm.test(\"Test comment '[2].author.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[2]).to.have.property('author');\r",
+							"    pm.expect(jsonData[2].author).to.have.property('id');\r",
+							"    pm.expect(jsonData[2].author.id, '\"[2].author.id\" must be \"137\"').to.eql(137);\r",
+							"});\r",
+							"pm.test(\"Test comment '[2].isAuthorInitiatorOfEvent' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[2]).to.have.property('isAuthorInitiatorOfEvent');\r",
+							"    pm.expect(jsonData[2].isAuthorInitiatorOfEvent, '\"[2].isAuthorInitiatorOfEvent\" must be \"false\"').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test comment '[2].isEdited' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[2]).to.have.property('isEdited');\r",
+							"    pm.expect(jsonData[2].isEdited, '\"[2].isEdited\" must be \"false\"').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test comment '[2].editedAt' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[2]).to.have.property('editedAt');\r",
+							"    pm.expect(jsonData[2].editedAt, '\"[2].editedAt\" must be null').is.null;\r",
+							"});\r",
+							"pm.test(\"Test comment '[2].created' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[2]).to.have.property('created');\r",
+							"    pm.expect(jsonData[2].created, '\"[2].created\" must be not null').is.not.null;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/admin/comments",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 1 update by user with not found user failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"Билетов ещё полно. Приходите кто хочет!\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/99999/comments/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"99999",
+						"comments",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 99 update by user with not found comment failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"Билетов ещё полно. Приходите кто хочет!\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/136/comments/99",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"136",
+						"comments",
+						"99"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 1 update by user from not author failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"Билетов ещё полно. Приходите кто хочет!\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/137/comments/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"137",
+						"comments",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 1 update by user 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"pm.test(\"Has comment create response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Test comment 'id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('id');\r",
+							"    pm.expect(jsonData.id, '\"id\" must be 1').to.eql(1);\r",
+							"});\r",
+							"pm.test(\"Test comment 'text' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('text');\r",
+							"    pm.expect(jsonData.text, '\"text\" must be \"Билетов ещё полно. Приходите кто хочет!\"').to.eql('Билетов ещё полно. Приходите кто хочет!');\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('id');\r",
+							"    pm.expect(jsonData.event.id, '\"event.id\" must be \"106\"').to.eql(106);\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.annotation' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('annotation');\r",
+							"    pm.expect(jsonData.event.annotation, '\"annotation\" must be \"Концерт группы Леприконсы похож на полет.\"').to.eql('Концерт группы Леприконсы похож на полет.');\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.category.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('category');\r",
+							"    pm.expect(jsonData.event.category).to.have.property('id');\r",
+							"    pm.expect(jsonData.event.category.id, '\"event.category.id\" must be 121').to.eql(121);\r",
+							"});\r",
+							"pm.test(\"Test comment 'eventDate' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('eventDate');\r",
+							"    pm.expect(jsonData.event.eventDate, '\"event.eventDate\" must be \"2023-12-21 11:10:05\"').to.eql('2023-12-21 11:10:05');\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.initiator.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('initiator');\r",
+							"    pm.expect(jsonData.event.initiator).to.have.property('id');\r",
+							"    pm.expect(jsonData.event.initiator.id, '\"event.initiator.id\" must be 136').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.paid' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('paid');\r",
+							"    pm.expect(jsonData.event.paid, '\"event.paid\" must be true').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.title' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('title');\r",
+							"    pm.expect(jsonData.event.title, '\"event.title\" must be \"Концерт группы Леприконсы\"').to.eql('Концерт группы Леприконсы');\r",
+							"});\r",
+							"pm.test(\"Test comment 'author.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('author');\r",
+							"    pm.expect(jsonData.author).to.have.property('id');\r",
+							"    pm.expect(jsonData.author.id, '\"author.id\" must be \"136\"').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test comment 'isAuthorInitiatorOfEvent' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('isAuthorInitiatorOfEvent');\r",
+							"    pm.expect(jsonData.isAuthorInitiatorOfEvent, '\"isAuthorInitiatorOfEvent\" must be \"true\"').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment 'isEdited' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('isEdited');\r",
+							"    pm.expect(jsonData.isEdited, '\"isEdited\" must be \"true\"').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment 'editedAt' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('editedAt');\r",
+							"    pm.expect(jsonData.editedAt, '\"editedAt\" must be not null').is.not.null;\r",
+							"});\r",
+							"pm.test(\"Test comment 'created' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('created');\r",
+							"    pm.expect(jsonData.created, '\"created\" must be not null').is.not.null;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"Билетов ещё полно. Приходите кто хочет!\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/136/comments/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"136",
+						"comments",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 99 update by admin with not found comment failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"Администратор исправил этот комментарий.\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/admin/comments/99",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"comments",
+						"99"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 2 update by admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"pm.test(\"Has comment create response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"});\r",
+							"pm.test(\"Test comment 'id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('id');\r",
+							"    pm.expect(jsonData.id, '\"id\" must be 2').to.eql(2);\r",
+							"});\r",
+							"pm.test(\"Test comment 'text' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('text');\r",
+							"    pm.expect(jsonData.text, '\"text\" must be \"Администратор исправил этот комментарий.\"').to.eql('Администратор исправил этот комментарий.');\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('id');\r",
+							"    pm.expect(jsonData.event.id, '\"event.id\" must be \"106\"').to.eql(106);\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.annotation' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('annotation');\r",
+							"    pm.expect(jsonData.event.annotation, '\"annotation\" must be \"Концерт группы Леприконсы похож на полет.\"').to.eql('Концерт группы Леприконсы похож на полет.');\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.category.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('category');\r",
+							"    pm.expect(jsonData.event.category).to.have.property('id');\r",
+							"    pm.expect(jsonData.event.category.id, '\"event.category.id\" must be 121').to.eql(121);\r",
+							"});\r",
+							"pm.test(\"Test comment 'eventDate' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('eventDate');\r",
+							"    pm.expect(jsonData.event.eventDate, '\"event.eventDate\" must be \"2023-12-21 11:10:05\"').to.eql('2023-12-21 11:10:05');\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.initiator.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('initiator');\r",
+							"    pm.expect(jsonData.event.initiator).to.have.property('id');\r",
+							"    pm.expect(jsonData.event.initiator.id, '\"event.initiator.id\" must be 136').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.paid' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('paid');\r",
+							"    pm.expect(jsonData.event.paid, '\"event.paid\" must be true').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment 'event.title' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('event');\r",
+							"    pm.expect(jsonData.event).to.have.property('title');\r",
+							"    pm.expect(jsonData.event.title, '\"event.title\" must be \"Концерт группы Леприконсы\"').to.eql('Концерт группы Леприконсы');\r",
+							"});\r",
+							"pm.test(\"Test comment 'author.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('author');\r",
+							"    pm.expect(jsonData.author).to.have.property('id');\r",
+							"    pm.expect(jsonData.author.id, '\"author.id\" must be \"137\"').to.eql(137);\r",
+							"});\r",
+							"pm.test(\"Test comment 'isAuthorInitiatorOfEvent' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('isAuthorInitiatorOfEvent');\r",
+							"    pm.expect(jsonData.isAuthorInitiatorOfEvent, '\"isAuthorInitiatorOfEvent\" must be \"false\"').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test comment 'isEdited' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('isEdited');\r",
+							"    pm.expect(jsonData.isEdited, '\"isEdited\" must be \"true\"').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment 'editedAt' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('editedAt');\r",
+							"    pm.expect(jsonData.editedAt, '\"editedAt\" must be not null').is.not.null;\r",
+							"});\r",
+							"pm.test(\"Test comment 'created' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property('created');\r",
+							"    pm.expect(jsonData.created, '\"created\" must be not null').is.not.null;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"Администратор исправил этот комментарий.\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/admin/comments/2",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"comments",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comments get all by admin with search by text",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.be.ok;\r",
+							"});\r",
+							"pm.test(\"Test list event response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length, 'List length must be 1').to.eql(1);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].id, '\"[0].id\" must be 2').to.eql(2);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].text' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('text');\r",
+							"    pm.expect(jsonData[0].text, '\"[0].text\" must be \"Администратор исправил этот комментарий.\"').to.eql('Администратор исправил этот комментарий.');\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].event.id, '\"[0].event.id\" must be \"106\"').to.eql(106);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.annotation' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('annotation');\r",
+							"    pm.expect(jsonData[0].event.annotation, '\"[0].annotation\" must be \"Концерт группы Леприконсы похож на полет.\"').to.eql('Концерт группы Леприконсы похож на полет.');\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.category.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('category');\r",
+							"    pm.expect(jsonData[0].event.category).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].event.category.id, '\"[0].event.category.id\" must be 121').to.eql(121);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].eventDate' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('eventDate');\r",
+							"    pm.expect(jsonData[0].event.eventDate, '\"[0].event.eventDate\" must be \"2023-12-21 11:10:05\"').to.eql('2023-12-21 11:10:05');\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.initiator.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('initiator');\r",
+							"    pm.expect(jsonData[0].event.initiator).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].event.initiator.id, '\"[0].event.initiator.id\" must be 136').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.paid' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('paid');\r",
+							"    pm.expect(jsonData[0].event.paid, '\"[0].event.paid\" must be true').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.title' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('title');\r",
+							"    pm.expect(jsonData[0].event.title, '\"[0].event.title\" must be \"Концерт группы Леприконсы\"').to.eql('Концерт группы Леприконсы');\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].author.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('author');\r",
+							"    pm.expect(jsonData[0].author).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].author.id, '\"[0].author.id\" must be \"137\"').to.eql(137);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].isAuthorInitiatorOfEvent' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('isAuthorInitiatorOfEvent');\r",
+							"    pm.expect(jsonData[0].isAuthorInitiatorOfEvent, '\"[0].isAuthorInitiatorOfEvent\" must be \"false\"').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].isEdited' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('isEdited');\r",
+							"    pm.expect(jsonData[0].isEdited, '\"[0].isEdited\" must be \"true\"').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].editedAt' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('editedAt');\r",
+							"    pm.expect(jsonData[0].editedAt, '\"[0].editedAt\" must be not null').is.not.null;\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].created' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('created');\r",
+							"    pm.expect(jsonData[0].created, '\"[0].created\" must be not null').is.not.null;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/admin/comments?text=Админ",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"comments"
+					],
+					"query": [
+						{
+							"key": "text",
+							"value": "Админ"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comments get only edited by admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.be.ok;\r",
+							"});\r",
+							"pm.test(\"Test list event response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length, 'List length must be 2').to.eql(2);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].id, '\"[0].id\" must be 1').to.eql(1);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].text' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('text');\r",
+							"    pm.expect(jsonData[0].text, '\"[0].text\" must be \"Билетов ещё полно. Приходите кто хочет!\"').to.eql('Билетов ещё полно. Приходите кто хочет!');\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].event.id, '\"[0].event.id\" must be \"106\"').to.eql(106);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.annotation' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('annotation');\r",
+							"    pm.expect(jsonData[0].event.annotation, '\"[0].annotation\" must be \"Концерт группы Леприконсы похож на полет.\"').to.eql('Концерт группы Леприконсы похож на полет.');\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.category.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('category');\r",
+							"    pm.expect(jsonData[0].event.category).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].event.category.id, '\"[0].event.category.id\" must be 121').to.eql(121);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].eventDate' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('eventDate');\r",
+							"    pm.expect(jsonData[0].event.eventDate, '\"[0].event.eventDate\" must be \"2023-12-21 11:10:05\"').to.eql('2023-12-21 11:10:05');\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.initiator.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('initiator');\r",
+							"    pm.expect(jsonData[0].event.initiator).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].event.initiator.id, '\"[0].event.initiator.id\" must be 136').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.paid' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('paid');\r",
+							"    pm.expect(jsonData[0].event.paid, '\"[0].event.paid\" must be true').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.title' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('title');\r",
+							"    pm.expect(jsonData[0].event.title, '\"[0].event.title\" must be \"Концерт группы Леприконсы\"').to.eql('Концерт группы Леприконсы');\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].author.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('author');\r",
+							"    pm.expect(jsonData[0].author).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].author.id, '\"[0].author.id\" must be \"136\"').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].isAuthorInitiatorOfEvent' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('isAuthorInitiatorOfEvent');\r",
+							"    pm.expect(jsonData[0].isAuthorInitiatorOfEvent, '\"[0].isAuthorInitiatorOfEvent\" must be \"true\"').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].isEdited' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('isEdited');\r",
+							"    pm.expect(jsonData[0].isEdited, '\"[0].isEdited\" must be \"true\"').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].created' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('created');\r",
+							"    pm.expect(jsonData[0].created, '\"[0].created\" must be not null').is.not.null;\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('id');\r",
+							"    pm.expect(jsonData[1].id, '\"[1].id\" must be 2').to.eql(2);\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].text' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('text');\r",
+							"    pm.expect(jsonData[1].text, '\"[1].text\" must be \"Администратор исправил этот комментарий.\"').to.eql('Администратор исправил этот комментарий.');\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].event.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('event');\r",
+							"    pm.expect(jsonData[1].event).to.have.property('id');\r",
+							"    pm.expect(jsonData[1].event.id, '\"[1].event.id\" must be \"106\"').to.eql(106);\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].event.annotation' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('event');\r",
+							"    pm.expect(jsonData[1].event).to.have.property('annotation');\r",
+							"    pm.expect(jsonData[1].event.annotation, '\"[1].annotation\" must be \"Концерт группы Леприконсы похож на полет.\"').to.eql('Концерт группы Леприконсы похож на полет.');\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].event.category.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('event');\r",
+							"    pm.expect(jsonData[1].event).to.have.property('category');\r",
+							"    pm.expect(jsonData[1].event.category).to.have.property('id');\r",
+							"    pm.expect(jsonData[1].event.category.id, '\"[1].event.category.id\" must be 121').to.eql(121);\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].eventDate' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('event');\r",
+							"    pm.expect(jsonData[1].event).to.have.property('eventDate');\r",
+							"    pm.expect(jsonData[1].event.eventDate, '\"[1].event.eventDate\" must be \"2023-12-21 11:10:05\"').to.eql('2023-12-21 11:10:05');\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].event.initiator.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('event');\r",
+							"    pm.expect(jsonData[1].event).to.have.property('initiator');\r",
+							"    pm.expect(jsonData[1].event.initiator).to.have.property('id');\r",
+							"    pm.expect(jsonData[1].event.initiator.id, '\"[1].event.initiator.id\" must be 136').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].event.paid' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('event');\r",
+							"    pm.expect(jsonData[1].event).to.have.property('paid');\r",
+							"    pm.expect(jsonData[1].event.paid, '\"[1].event.paid\" must be true').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].event.title' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('event');\r",
+							"    pm.expect(jsonData[1].event).to.have.property('title');\r",
+							"    pm.expect(jsonData[1].event.title, '\"[1].event.title\" must be \"Концерт группы Леприконсы\"').to.eql('Концерт группы Леприконсы');\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].author.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('author');\r",
+							"    pm.expect(jsonData[1].author).to.have.property('id');\r",
+							"    pm.expect(jsonData[1].author.id, '\"[1].author.id\" must be \"137\"').to.eql(137);\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].isAuthorInitiatorOfEvent' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('isAuthorInitiatorOfEvent');\r",
+							"    pm.expect(jsonData[1].isAuthorInitiatorOfEvent, '\"[1].isAuthorInitiatorOfEvent\" must be \"false\"').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].isEdited' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('isEdited');\r",
+							"    pm.expect(jsonData[1].isEdited, '\"[1].isEdited\" must be \"true\"').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].editedAt' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('editedAt');\r",
+							"    pm.expect(jsonData[1].editedAt, '\"[1].editedAt\" must be not null').is.not.null;\r",
+							"});\r",
+							"pm.test(\"Test comment '[1].created' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[1]).to.have.property('created');\r",
+							"    pm.expect(jsonData[1].created, '\"[1].created\" must be not null').is.not.null;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/admin/comments?onlyEdited=true",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"comments"
+					],
+					"query": [
+						{
+							"key": "onlyEdited",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 1 delete with not found user failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/users/99999/comments/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"99999",
+						"comments",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 99 delete by user with not found comment failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/users/136/comments/99",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"136",
+						"comments",
+						"99"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 1 delete by not author failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/users/137/comments/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"137",
+						"comments",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 1 delete by user 1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/users/136/comments/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"136",
+						"comments",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 1 delete by admin with not found comment failed",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(404);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/admin/comments/1",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"comments",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comment 2 delete by admin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.expect(pm.response.code).to.eql(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/admin/comments/2",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"comments",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Comments get all by admin after deleting of 2 comments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.be.ok;\r",
+							"});\r",
+							"pm.test(\"Test list event response\", function () {\r",
+							"    pm.response.to.be.withBody;\r",
+							"    pm.response.to.be.json;\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.length, 'List length must be 1').to.eql(1);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].id, '\"[0].id\" must be 3').to.eql(3);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].text' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('text');\r",
+							"    pm.expect(jsonData[0].text, '\"[0].text\" must be \"Так можно взять Кота или нет?\"').to.eql('Так можно взять Кота или нет?');\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].event.id, '\"[0].event.id\" must be \"106\"').to.eql(106);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.annotation' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('annotation');\r",
+							"    pm.expect(jsonData[0].event.annotation, '\"[0].annotation\" must be \"Концерт группы Леприконсы похож на полет.\"').to.eql('Концерт группы Леприконсы похож на полет.');\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.category.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('category');\r",
+							"    pm.expect(jsonData[0].event.category).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].event.category.id, '\"[0].event.category.id\" must be 121').to.eql(121);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].eventDate' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('eventDate');\r",
+							"    pm.expect(jsonData[0].event.eventDate, '\"[0].event.eventDate\" must be \"2023-12-21 11:10:05\"').to.eql('2023-12-21 11:10:05');\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.initiator.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('initiator');\r",
+							"    pm.expect(jsonData[0].event.initiator).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].event.initiator.id, '\"[0].event.initiator.id\" must be 136').to.eql(136);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.paid' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('paid');\r",
+							"    pm.expect(jsonData[0].event.paid, '\"[0].event.paid\" must be true').to.eql(true);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].event.title' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('event');\r",
+							"    pm.expect(jsonData[0].event).to.have.property('title');\r",
+							"    pm.expect(jsonData[0].event.title, '\"[0].event.title\" must be \"Концерт группы Леприконсы\"').to.eql('Концерт группы Леприконсы');\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].author.id' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('author');\r",
+							"    pm.expect(jsonData[0].author).to.have.property('id');\r",
+							"    pm.expect(jsonData[0].author.id, '\"[0].author.id\" must be \"137\"').to.eql(137);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].isAuthorInitiatorOfEvent' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('isAuthorInitiatorOfEvent');\r",
+							"    pm.expect(jsonData[0].isAuthorInitiatorOfEvent, '\"[0].isAuthorInitiatorOfEvent\" must be \"false\"').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].isEdited' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('isEdited');\r",
+							"    pm.expect(jsonData[0].isEdited, '\"[0].isEdited\" must be \"false\"').to.eql(false);\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].editedAt' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('editedAt');\r",
+							"    pm.expect(jsonData[0].editedAt, '\"[0].editedAt\" must be null').is.null;\r",
+							"});\r",
+							"pm.test(\"Test comment '[0].created' field\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0]).to.have.property('created');\r",
+							"    pm.expect(jsonData[0].created, '\"[0].created\" must be not null').is.not.null;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "*/*",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/admin/comments",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"admin",
+						"comments"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080"
+		}
+	]
+}

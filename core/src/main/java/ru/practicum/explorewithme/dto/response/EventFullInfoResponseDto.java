@@ -1,19 +1,18 @@
 package ru.practicum.explorewithme.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.practicum.explorewithme.enums.EventModerationState;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class EventFullInfoResponseDto {
+@Builder(builderMethodName = "eventFullInfoResponseDtoBuilder")
+@EqualsAndHashCode(callSuper = true)
+public class EventFullInfoResponseDto extends EventResponseDto {
     private String annotation;
     private CategoryResponseDto category;
     private Long confirmedRequests;
@@ -23,7 +22,7 @@ public class EventFullInfoResponseDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     private Long id;
-    private InitiatorResponseDto initiator;
+    private UserResponseDto initiator;
     private LocationResponseDto location;
     private Boolean paid;
     private Long participantLimit;
@@ -33,4 +32,5 @@ public class EventFullInfoResponseDto {
     private EventModerationState state;
     private String title;
     private Long views;
+    private List<CommentResponseDto> comments;
 }
